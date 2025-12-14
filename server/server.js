@@ -1,0 +1,40 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import { connectDB } from "./config/db.js";
+import authRoutes from "./routes/auth.routes.js"
+import courseRoutes from "./routes/course.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import enrollmentRoutes from "./routes/enrollment.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
+
+
+const app = express();
+app.use(cors({
+    origin: '*'
+}))
+app.use(morgan('dev'));
+
+app.use(cookieParser());
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+connectDB();
+
+app.use("/api/auth",authRoutes);
+app.use("/api/courses",courseRoutes);
+app.use("/api/reviews",reviewRoutes);
+app.use("/api/enrollments",enrollmentRoutes);
+app.use("/api/payment",paymentRoutes);
+app.use("/api/upload",uploadRoutes);
+
+
+app.listen(process.env.PORT,() => {
+    console.log(`Server is listening on port ${process.env.PORT}`);
+})
+
+
