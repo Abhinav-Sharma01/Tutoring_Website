@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/auth-context";
+import toast from "react-hot-toast";
 
 const InstructorDashboard = () => {
+  const { user } = useContext(AuthContext);
   const [stats, setStats] = useState(null);
+  const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -14,9 +18,15 @@ const InstructorDashboard = () => {
       } catch {
         setError("Failed to load instructor stats");
       }
+      if (user?._id) {
+        try {
+          const coursesRes = await api.get(`/courses/tutor/${user._id}`);
+          setCourses(Array.isArray(coursesRes.data) ? coursesRes.data : coursesRes.data?.courses || []);
+        } catch { }
+      }
     };
     fetchStats();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const s = document.createElement("style");
@@ -113,7 +123,44 @@ const InstructorDashboard = () => {
           </div>
         </div>
 
-        {/* Quick actions */}
+        {/* My courses */}
+        <div style={{ marginBottom: 32 }}>
+          <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px", display: "flex", alignItems: "center", gap: 10 }}>
+            📚 My Courses ({courses.length})
+          </h3>
+          {courses.length === 0 ? (
+            <div className="tp-stat-card" style={{ textAlign: "center", padding: 40 }}>
+              <p style={{ color: muted, margin: "0 0 14px" }}>You haven't created any courses yet.</p>
+              <Link to="/create-course" style={{ color: accent, fontWeight: 700, textDecoration: "none" }}>+ Create your first course</Link>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {courses.map((c) => (
+                <div key={c._id} className="tp-stat-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px" }}>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: 4 }}>{c.title}</div>
+                    <div style={{ color: muted, fontSize: "0.8rem" }}>
+                      {c.category} · {c.level} · ₹{c.price} · {c.lessons?.length || 0} lessons
+                    </div>
+                  </div>
+                  <button onClick={async () => {
+                    if (!confirm(`Delete "${c.title}"?`)) return;
+                    try {
+                      await api.delete(`/courses/${c._id}`);
+                      setCourses(courses.filter(x => x._id !== c._id));
+                      toast.success("Course deleted");
+                    } catch (err) {
+                      toast.error(err.response?.data?.message || "Failed to delete");
+                    }
+                  }} style={{ padding: "6px 16px", borderRadius: 8, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif" }}>
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px" }}>Quick Actions</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {[
