@@ -21,3 +21,5 @@ const videoStorage = new CloudinaryStorage({
 
 export const uploadImage = multer({ storage: imageStorage });
 export const uploadVideo = multer({ storage: videoStorage });
+
+

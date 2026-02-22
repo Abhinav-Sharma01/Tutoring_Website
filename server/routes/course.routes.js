@@ -17,8 +17,21 @@ const router = express.Router();
 // Create course (tutor/admin only)
 router.post("/create", protect, createCourse);
 
+// --- Static / multi-segment routes FIRST ---
+
+// Search courses
+router.get("/search/query", searchCourses);
+
+// Get courses by category
+router.get("/category/:category", getCoursesByCategory);
+
+// Get tutor's courses
+router.get("/tutor/:id", getTutorCourses);
+
 // Get all courses
 router.get("/", getAllCourses);
+
+// --- Single param routes LAST ---
 
 // Get single course
 router.get("/:id", getCourseById);
@@ -28,14 +41,5 @@ router.put("/:id", protect, updateCourse);
 
 // Delete course
 router.delete("/:id", protect, deleteCourse);
-
-// Get tutor's courses
-router.get("/tutor/:id", getTutorCourses);
-
-// Get courses by category
-router.get("/category/:category", getCoursesByCategory);
-
-// Search courses
-router.get("/search/query", searchCourses);
 
 export default router;

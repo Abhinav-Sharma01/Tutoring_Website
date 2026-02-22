@@ -5,7 +5,8 @@ import {
     enrollCourse,
     getMyEnrollments,
     checkEnrollment,
-    completeCourse
+    completeCourse,
+    getEnrollmentStats
 } from "../controllers/enrollment.controller.js";
 
 const router = express.Router();
@@ -22,4 +23,8 @@ router.get("/check/:courseId", protect, checkEnrollment);
 // Mark course as completed
 router.post("/complete", protect, completeCourse);
 
+router.get("/stats", protect, getEnrollmentStats);
+
 export default router;
+
+

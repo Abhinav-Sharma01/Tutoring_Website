@@ -1,12 +1,18 @@
 import jwt from "jsonwebtoken";
 
+const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET;
+const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET;
+
 export const protect = async(req,res,next) => {
     try{
+        if (!JWT_ACCESS_TOKEN_SECRET || !JWT_REFRESH_TOKEN_SECRET) {
+            return res.status(500).json({ message: "Server auth configuration error" });
+        }
         const accessToken = req.cookies?.accessToken;
 
         if(accessToken){
             try{
-                let decoded = jwt.verify(accessToken,JWT_ACCESS_TOKEN_SECRET);
+                let decoded = jwt.verify(accessToken, JWT_ACCESS_TOKEN_SECRET);
                 req.user = decoded;
                 return next();
             }catch(error){}
@@ -19,7 +25,7 @@ export const protect = async(req,res,next) => {
 
         let decoded;
         try{
-            decoded = jwt.verify(refreshToken,JWT_REFRESH_TOKEN_SECRET);
+            decoded = jwt.verify(refreshToken, JWT_REFRESH_TOKEN_SECRET);
         }catch(error){
             return res.status(401).json({ message: "Refresh token invalid or expired" });
         }
@@ -32,12 +38,13 @@ export const protect = async(req,res,next) => {
 
         req.user = decoded;
 
-        res.cookie('accessToken',newaccessToken,{
+        const isProduction = process.env.NODE_ENV === "production";
+        res.cookie("accessToken", newaccessToken, {
             httpOnly: true,
-            secure: false,
+            secure: isProduction,
             sameSite: "lax",
-            maxAge: 15 * 60 * 1000
-        })
+            maxAge: 15 * 60 * 1000,
+        });
 
         next();
 
@@ -45,3 +52,4 @@ export const protect = async(req,res,next) => {
         return res.status(401).json({message: "Unauthorized",error:error.message});
     }
 }
+

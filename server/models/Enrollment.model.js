@@ -38,3 +38,5 @@ enrollmentSchema.index(
 );
 
 export const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
+
+

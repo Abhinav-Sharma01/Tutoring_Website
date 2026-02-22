@@ -254,3 +254,5 @@ export {
     getCoursesByCategory,
     searchCourses
 }
+
+

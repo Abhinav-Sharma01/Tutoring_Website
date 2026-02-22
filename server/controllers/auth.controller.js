@@ -44,17 +44,14 @@ const registerUser = async (req,res) => {
         user.refreshToken = RefreshToken;
         await user.save();
 
-        res.cookie("refreshToken", RefreshToken, {
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOpts = {
             httpOnly: true,
-            secure: false,
+            secure: isProduction,
             sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        }).cookie('accessToken',AccessToken,{
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 15 * 60 * 1000
-        })
+        };
+        res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
+            .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
 
         res.status(201).json({
             message: "User registered successfully",
@@ -129,17 +126,10 @@ const loginUser = async (req,res) => {
         await userExists.save();
 
 
-        res.cookie('refreshToken',RefreshToken,{
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        }).cookie('accessToken',AccessToken,{
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 15 * 60  * 1000
-        })
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOpts = { httpOnly: true, secure: isProduction, sameSite: "lax" };
+        res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
+            .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
 
         res.status(200).json({
             message: "User successfully logged-In..",
@@ -170,6 +160,7 @@ const getCurrentUser = async (req,res) => {
 
         res.status(200).json({message: "Here are the current user details..",
             user: {
+                id: currUserData._id,
                 username: currUserData.username,
                 email: currUserData.email,
                 status: currUserData.status,
@@ -181,15 +172,25 @@ const getCurrentUser = async (req,res) => {
 
     }catch(error){
         console.error("Error occurred while getting the current user details",error.message);
-        res.status(500).json({message: "Internal server error occurred while getting the current user details..."});
-        process.exit(1);
+        return res.status(500).json({message: "Internal server error occurred while getting the current user details..."});
     }
 }
 
 
 
+const logoutUser = async (req, res) => {
+    try {
+        res.clearCookie("accessToken", { httpOnly: true, sameSite: "lax" })
+            .clearCookie("refreshToken", { httpOnly: true, sameSite: "lax" });
+        return res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: "Logout failed" });
+    }
+};
+
 export {
     registerUser,
     loginUser,
     getCurrentUser,
+    logoutUser,
 }

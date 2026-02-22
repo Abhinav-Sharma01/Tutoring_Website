@@ -17,3 +17,5 @@ router.post("/thumbnail/:courseId", protect, uploadImage.single("thumbnail"), up
 router.post("/lesson-video", protect, uploadVideo.single("video"), uploadLessonVideo);
 
 export default router;
+
+
