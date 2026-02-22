@@ -13,6 +13,7 @@ import InstructorDashboard from "./pages/InstructorDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import Register from "./pages/Register";
 import CreateCourse from "./pages/CreateCourse";
+import ForgotPassword from "./pages/ForgotPassword";
 import ScrollToTop from "./components/ScrollToTop";
 
 function AnimatedRoutes() {
@@ -22,6 +23,7 @@ function AnimatedRoutes() {
       <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/course/:id" element={<CourseDetails />} />

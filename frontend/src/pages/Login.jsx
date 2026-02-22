@@ -220,7 +220,7 @@ const Login = () => {
             <div style={{ marginBottom: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <label style={{ fontSize: "0.83rem", fontWeight: 700, color: focused === "pwd" ? "#00d4ff" : "#8ab0bf", letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Password</label>
-                <span style={{ fontSize: "0.82rem", color: "#00d4ff", cursor: "pointer", fontWeight: 600 }}>Forgot?</span>
+                <Link to="/forgot-password" style={{ fontSize: "0.82rem", color: "#00d4ff", cursor: "pointer", fontWeight: 600, textDecoration: "none" }}>Forgot?</Link>
               </div>
               <div style={{ position: "relative" }}>
                 <svg style={{ position: "absolute", left: 15, top: "50%", transform: "translateY(-50%)", color: focused === "pwd" ? "#00d4ff" : muted, transition: "color 0.3s" }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

@@ -137,12 +137,12 @@ const InstructorDashboard = () => {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {courses.map((c) => (
                 <div key={c._id} className="tp-stat-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px" }}>
-                  <div>
+                  <Link to={`/course/${c._id}`} style={{ textDecoration: "none", color: "inherit", flex: 1 }}>
                     <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: 4 }}>{c.title}</div>
                     <div style={{ color: muted, fontSize: "0.8rem" }}>
                       {c.category} · {c.level} · ₹{c.price} · {c.lessons?.length || 0} lessons
                     </div>
-                  </div>
+                  </Link>
                   <button onClick={async () => {
                     if (!confirm(`Delete "${c.title}"?`)) return;
                     try {

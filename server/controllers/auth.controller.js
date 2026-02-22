@@ -1,6 +1,8 @@
 import { User } from "../models/User.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { sendOtpEmail } from "../utils/email.js";
 import { OAuth2Client } from "google-auth-library";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -267,10 +269,75 @@ const googleAuth = async (req, res) => {
     }
 };
 
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email is required" });
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "No account found with this email" });
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = await bcrypt.hash(otp, 10);
+
+        user.resetOtp = hashedOtp;
+        user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+
+        await sendOtpEmail(user.email, otp);
+
+        res.status(200).json({ message: "OTP sent to your email" });
+    } catch (error) {
+        console.error("Forgot password error:", error.message);
+        res.status(500).json({ message: "Failed to send OTP. Check your email configuration." });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword, confirmPassword } = req.body;
+
+        if (!email || !otp || !newPassword || !confirmPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match" });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.resetOtp || !user.resetOtpExpiry) {
+            return res.status(400).json({ message: "No OTP request found. Please request a new one." });
+        }
+        if (new Date() > user.resetOtpExpiry) {
+            return res.status(400).json({ message: "OTP has expired. Please request a new one." });
+        }
+
+        const isValid = await bcrypt.compare(otp, user.resetOtp);
+        if (!isValid) return res.status(400).json({ message: "Invalid OTP" });
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        user.resetOtp = null;
+        user.resetOtpExpiry = null;
+        await user.save();
+
+        res.status(200).json({ message: "Password reset successful" });
+    } catch (error) {
+        console.error("Reset password error:", error.message);
+        res.status(500).json({ message: "Failed to reset password" });
+    }
+};
+
 export {
     registerUser,
     loginUser,
     getCurrentUser,
     logoutUser,
     googleAuth,
+    forgotPassword,
+    resetPassword,
 }
