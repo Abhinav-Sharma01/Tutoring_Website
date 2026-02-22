@@ -49,7 +49,7 @@ const statsData = [
 ];
 
 const features = [
-  { icon: "⚡", title: "AI Learning Paths", desc: "Adaptive intelligence analyzes your pace and crafts personalized roadmaps that evolve as you grow.", accent: "#00d4ff" },
+  { icon: "⚡", title: "Smart Learning Paths", desc: "Our system analyzes your pace and crafts personalized roadmaps that evolve as you grow.", accent: "#00d4ff" },
   { icon: "🎓", title: "Elite Instructors", desc: "Learn from verified experts at Google, MIT, and Y Combinator with proven real-world results.", accent: "#a78bfa" },
   { icon: "🏆", title: "Verified Certificates", desc: "Earn blockchain-verified credentials that employers worldwide recognize and trust.", accent: "#34d399" },
   { icon: "🔴", title: "Live Cohorts", desc: "Join live sessions, office hours, and peer groups that keep you accountable and inspired.", accent: "#f87171" },
@@ -58,9 +58,9 @@ const features = [
 ];
 
 const testimonials = [
-  { name: "Priya Sharma", role: "Frontend Dev @ Flipkart", text: "TutorPro's AI path took me from zero to job-ready in 4 months. The depth of instruction is unlike anything else on the market.", initials: "PS", grad: "linear-gradient(135deg, #00d4ff, #0094ff)" },
-  { name: "Miguel Reyes", role: "ML Engineer @ OpenAI", text: "I've tried every platform. TutorPro is operating on a completely different tier — the instructors, the production quality, everything.", initials: "MR", grad: "linear-gradient(135deg, #a78bfa, #7c3aed)" },
-  { name: "Aisha Lowe", role: "Product Lead @ Figma", text: "Finally a platform that respects adult learners. Clean, focused, no fluff. The certificate boosted my career in ways I didn't expect.", initials: "AL", grad: "linear-gradient(135deg, #34d399, #059669)" },
+  { name: "Abhinav Sharma", role: "Full Stack Developer", text: "TutorPro took me from zero to job-ready in 4 months. The depth of instruction is unlike anything else on the market.", initials: "AS", grad: "linear-gradient(135deg, #00d4ff, #0094ff)" },
+  { name: "Rahul Verma", role: "Backend Developer", text: "I've tried every platform. TutorPro is operating on a completely different tier — the instructors, the production quality, everything.", initials: "RV", grad: "linear-gradient(135deg, #a78bfa, #7c3aed)" },
+  { name: "Sneha Gupta", role: "Product Designer", text: "Finally a platform that respects learners. Clean, focused, no fluff. The certificate boosted my career in ways I didn't expect.", initials: "SG", grad: "linear-gradient(135deg, #34d399, #059669)" },
 ];
 
 const Home = () => {
@@ -244,7 +244,7 @@ const Home = () => {
         {/* Live badge */}
         <div className="tp-animate-fade-up" style={{ animationDelay: "0ms", display: "flex", alignItems: "center", gap: 10, padding: "8px 20px", borderRadius: "100px", background: "rgba(0,212,255,0.06)", border: "1px solid rgba(0,212,255,0.18)", marginBottom: 32 }}>
           <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#34d399", display: "inline-block", animation: "tp-blink 2s infinite", boxShadow: "0 0 8px #34d399" }} />
-          <span style={{ fontSize: "0.8rem", color: "#7de8f5", fontWeight: 600, letterSpacing: "0.06em" }}>AI-powered personalized learning — now live</span>
+          <span style={{ fontSize: "0.8rem", color: "#7de8f5", fontWeight: 600, letterSpacing: "0.06em" }}>Personalized learning experience — now live</span>
         </div>
 
         {/* Hero title */}
@@ -257,7 +257,7 @@ const Home = () => {
         </h1>
 
         <p className="tp-animate-fade-up" style={{ animationDelay: "200ms", fontSize: "1.1rem", color: "#8ab0bf", lineHeight: 1.75, maxWidth: 560, textAlign: "center", marginBottom: 48 }}>
-          TutorPro connects ambitious learners with world-class instructors and adaptive AI — turning ambition into expertise, beautifully.
+          TutorPro connects ambitious learners with world-class instructors and expert-led courses — turning ambition into expertise, beautifully.
         </p>
 
         <div className="tp-animate-fade-up" style={{ animationDelay: "300ms", display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center" }}>
