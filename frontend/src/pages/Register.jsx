@@ -8,7 +8,7 @@ import { GoogleLogin } from "@react-oauth/google";
 const Register = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
-  const [form, setForm] = useState({ name: "", email: "", password: "", agree: false });
+  const [form, setForm] = useState({ name: "", email: "", password: "", agree: false, role: "student" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -114,7 +114,7 @@ const Register = () => {
     if (!form.agree) { setError("Please accept the terms to continue"); return; }
     setLoading(true); setError("");
     try {
-      const res = await api.post("/auth/register", { username: form.name, email: form.email, password: form.password });
+      const res = await api.post("/auth/register", { username: form.name, email: form.email, password: form.password, role: form.role });
       setUser(res.data.user);
       toast.success("🎉 Account created! Welcome to TutorPro.");
       navigate("/dashboard");
@@ -242,6 +242,30 @@ const Register = () => {
           </div>
 
           <form onSubmit={register}>
+            {/* Role selector */}
+            <div style={{ marginBottom: 22 }}>
+              <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#8ab0bf", marginBottom: 10, letterSpacing: "0.04em", textTransform: "uppercase" }}>I want to join as</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {[
+                  { value: "student", icon: "🎓", label: "Student", desc: "Learn & grow" },
+                  { value: "tutor", icon: "📚", label: "Tutor", desc: "Teach & earn" },
+                ].map(r => (
+                  <button key={r.value} type="button" onClick={() => setForm({ ...form, role: r.value })} style={{
+                    padding: "16px 14px", borderRadius: 14,
+                    background: form.role === r.value ? "rgba(167,139,250,0.1)" : "rgba(255,255,255,0.02)",
+                    border: `2px solid ${form.role === r.value ? "rgba(167,139,250,0.5)" : "rgba(255,255,255,0.06)"}`,
+                    cursor: "pointer", textAlign: "center", transition: "all 0.3s ease",
+                    fontFamily: "'Cabinet Grotesk', sans-serif",
+                    boxShadow: form.role === r.value ? "0 0 20px rgba(167,139,250,0.15)" : "none",
+                  }}>
+                    <div style={{ fontSize: "1.5rem", marginBottom: 4 }}>{r.icon}</div>
+                    <div style={{ color: form.role === r.value ? accent : "#e2f5f5", fontWeight: 700, fontSize: "0.95rem" }}>{r.label}</div>
+                    <div style={{ color: "#6b8fa0", fontSize: "0.75rem", marginTop: 2 }}>{r.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Name */}
             <div style={{ marginBottom: 18 }}>
               <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: focused === "name" ? accent : "#8ab0bf", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Full Name</label>

@@ -7,11 +7,13 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password, about } = req.body;
+        const { username, email, password, about, role } = req.body;
 
         if ([username, email, password].some((field) => !field || field.trim() === "")) {
             return res.status(400).json({ message: "All fields are must required..." });
         }
+
+        const userRole = (role === "tutor") ? "tutor" : "student";
 
         const userExists = await User.findOne({
             $or: [{ email }, { username }]
@@ -29,7 +31,7 @@ const registerUser = async (req, res) => {
             about,
             status: "active",
             avatar_url: "",
-            role: "student",
+            role: userRole,
         });
 
         const RefreshToken = jwt.sign(
