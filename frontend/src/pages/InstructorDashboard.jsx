@@ -18,9 +18,9 @@ const InstructorDashboard = () => {
       } catch {
         setError("Failed to load instructor stats");
       }
-      if (user?._id) {
+      if (user?.id) {
         try {
-          const coursesRes = await api.get(`/courses/tutor/${user._id}`);
+          const coursesRes = await api.get(`/courses/tutor/${user.id}`);
           setCourses(Array.isArray(coursesRes.data) ? coursesRes.data : coursesRes.data?.courses || []);
         } catch { }
       }
