@@ -1,6 +1,9 @@
 import { User } from "../models/User.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const registerUser = async (req, res) => {
     try {
@@ -189,9 +192,83 @@ const logoutUser = async (req, res) => {
     }
 };
 
+const googleAuth = async (req, res) => {
+    try {
+        const { credential } = req.body;
+        if (!credential) {
+            return res.status(400).json({ message: "Google credential is required" });
+        }
+
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { email, name, picture, sub: googleId } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            const randomPassword = await bcrypt.hash(googleId + Date.now(), 10);
+            user = await User.create({
+                username: name,
+                email,
+                password: randomPassword,
+                status: "active",
+                avatar_url: picture || "",
+                role: "student",
+                about: "",
+            });
+        }
+
+        if (user.status === "disabled") {
+            return res.status(403).json({ message: "Your account is disabled" });
+        }
+
+        const AccessToken = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_ACCESS_TOKEN_SECRET,
+            { expiresIn: "15m" }
+        );
+        const RefreshToken = jwt.sign(
+            { id: user._id },
+            process.env.JWT_REFRESH_TOKEN_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        user.refreshToken = RefreshToken;
+        if (picture && !user.avatar_url) user.avatar_url = picture;
+        await user.save();
+
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOpts = { httpOnly: true, secure: isProduction, sameSite: "lax" };
+        res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
+            .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
+
+        res.status(200).json({
+            message: "Google login successful",
+            AccessToken,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                status: user.status,
+                about: user.about,
+                avatar_url: user.avatar_url,
+            },
+        });
+    } catch (error) {
+        console.error("Google auth error:", error.message);
+        return res.status(500).json({ message: "Google authentication failed" });
+    }
+};
+
 export {
     registerUser,
     loginUser,
     getCurrentUser,
     logoutUser,
+    googleAuth,
 }

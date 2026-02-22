@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/auth-context";
 import toast from "react-hot-toast";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -214,7 +215,31 @@ const Register = () => {
             </div>
           )}
 
+          <div style={{ marginBottom: 28 }}>
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await api.post("/auth/google", { credential: credentialResponse.credential });
+                  setUser(res.data.user);
+                  toast.success("Account created! Welcome to TutorPro.");
+                  navigate("/dashboard");
+                } catch (err) {
+                  toast.error(err.response?.data?.message || "Google sign-up failed");
+                }
+              }}
+              onError={() => toast.error("Google sign-up failed")}
+              theme="filled_black"
+              size="large"
+              width="380"
+              text="signup_with"
+            />
+          </div>
 
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
+            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+            <span style={{ color: muted, fontSize: "0.8rem", letterSpacing: "0.04em" }}>or register with email</span>
+            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+          </div>
 
           <form onSubmit={register}>
             {/* Name */}

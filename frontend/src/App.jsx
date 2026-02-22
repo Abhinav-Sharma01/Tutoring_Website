@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import InstructorDashboard from "./pages/InstructorDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import Register from "./pages/Register";
+import CreateCourse from "./pages/CreateCourse";
 import ScrollToTop from "./components/ScrollToTop";
 
 function AnimatedRoutes() {
@@ -28,6 +29,7 @@ function AnimatedRoutes() {
         <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
         <Route path="/payment-history" element={<ProtectedRoute><PaymentHistory /></ProtectedRoute>} />
         <Route path="/instructor" element={<ProtectedRoute><InstructorDashboard /></ProtectedRoute>} />
+        <Route path="/create-course" element={<ProtectedRoute><CreateCourse /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
       </Routes>
     </div>

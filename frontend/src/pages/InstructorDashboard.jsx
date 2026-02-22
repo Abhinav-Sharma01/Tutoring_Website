@@ -74,7 +74,7 @@ const InstructorDashboard = () => {
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 2.6rem)", margin: "0 0 8px" }}>Instructor Dashboard</h1>
             <p style={{ color: muted, margin: 0, fontSize: "0.95rem" }}>Your teaching performance overview</p>
           </div>
-          <Link to="/courses" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 28px", borderRadius: 100, background: `linear-gradient(135deg, ${accent}, #0094ff)`, color: "#001820", textDecoration: "none", fontWeight: 800, fontSize: "0.88rem", boxShadow: `0 4px 24px rgba(0,212,255,0.3)`, transition: "all 0.3s" }}
+          <Link to="/create-course" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 28px", borderRadius: 100, background: `linear-gradient(135deg, ${accent}, #0094ff)`, color: "#001820", textDecoration: "none", fontWeight: 800, fontSize: "0.88rem", boxShadow: `0 4px 24px rgba(0,212,255,0.3)`, transition: "all 0.3s" }}
             onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 36px rgba(0,212,255,0.45)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,212,255,0.3)"; }}
           >+ Create Course</Link>
