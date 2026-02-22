@@ -1,10 +1,23 @@
 import { User } from "../models/User.model.js";
 import { Course } from "../models/Course.model.js";
+import { Enrollment } from "../models/Enrollment.model.js";
 
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password -refreshToken");
-    res.json(users);
+    const enrichedUsers = await Promise.all(users.map(async (u) => {
+      const userObj = u.toObject();
+      if (u.role === "student") {
+        const enrollments = await Enrollment.find({ studentId: u._id }).populate("courseId", "title");
+        userObj.enrolledCourses = enrollments.map(e => e.courseId?.title).filter(Boolean);
+      }
+      if (u.role === "tutor" || u.role === "admin") {
+        const courses = await Course.find({ tutorId: u._id }).select("title");
+        userObj.createdCourses = courses.map(c => c.title);
+      }
+      return userObj;
+    }));
+    res.json(enrichedUsers);
   } catch (error) {
     console.error("Admin get users error:", error.message);
     res.status(500).json({ message: "Failed to fetch users" });

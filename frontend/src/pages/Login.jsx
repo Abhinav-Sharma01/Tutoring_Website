@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/auth-context";
 import toast from "react-hot-toast";
-import { GoogleLogin } from "@react-oauth/google";
+
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
@@ -120,7 +120,7 @@ const Login = () => {
   const muted = "#6b8fa0";
 
   const panelFeatures = [
-    { icon: "🎯", title: "Personalized learning", desc: "Smart learning tailored to your pace" },
+    { icon: "🎯", title: "Personalized learning", desc: "Learning tailored to your goals" },
     { icon: "📊", title: "Real-time progress tracking", desc: "Beautiful dashboards to stay on course" },
     { icon: "🏆", title: "Verified certificates", desc: "Credentials employers actually value" },
   ];
@@ -146,7 +146,7 @@ const Login = () => {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399", display: "inline-block", animation: "tp-blink 2s infinite" }} />
-              <span style={{ fontSize: "0.78rem", color: "#5aafb8", letterSpacing: "0.08em" }}>50,000+ learners growing daily</span>
+              <span style={{ fontSize: "0.78rem", color: "#5aafb8", letterSpacing: "0.08em" }}>5,000+ learners growing daily</span>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ const Login = () => {
                 </div>
               ))}
             </div>
-            <span style={{ fontSize: "0.83rem", color: muted }}>Join 50,000+ ambitious learners</span>
+            <span style={{ fontSize: "0.83rem", color: muted }}>Join 5,000+ learners</span>
           </div>
         </div>
       </div>
@@ -201,31 +201,7 @@ const Login = () => {
             </p>
           </div>
 
-          <div style={{ marginBottom: 28 }}>
-            <GoogleLogin
-              onSuccess={async (credentialResponse) => {
-                try {
-                  const res = await api.post("/auth/google", { credential: credentialResponse.credential });
-                  setUser(res.data.user);
-                  toast.success("Welcome back!");
-                  navigate("/dashboard");
-                } catch (err) {
-                  toast.error(err.response?.data?.message || "Google sign-in failed");
-                }
-              }}
-              onError={() => toast.error("Google sign-in failed")}
-              theme="filled_black"
-              size="large"
-              width="380"
-              text="signin_with"
-            />
-          </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
-            <span style={{ color: muted, fontSize: "0.8rem", letterSpacing: "0.04em" }}>or continue with email</span>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
-          </div>
 
           {/* Form */}
           <form onSubmit={login}>

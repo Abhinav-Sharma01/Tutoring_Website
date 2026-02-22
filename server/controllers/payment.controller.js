@@ -11,7 +11,7 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ message: "Amount and courseId are required" });
         }
 
-        // Razorpay needs amount in paise (INR * 100)
+        // amount in paise
         const options = {
             amount: amount * 100,
             currency: "INR",
@@ -20,7 +20,7 @@ const createOrder = async (req, res) => {
 
         const order = await razorpayInstance.orders.create(options);
 
-        // Use findOneAndUpdate with upsert to avoid duplicate enrollment errors
+        // upsert to avoid duplicate enrollments
         const enrollment = await Enrollment.findOneAndUpdate(
             { studentId, courseId },
             { $setOnInsert: { studentId, courseId, paymentStatus: "pending" } },
@@ -66,7 +66,7 @@ const verifyPayment = async (req, res) => {
             return res.status(400).json({ message: "Invalid payment signature" });
         }
 
-        // Update payment success
+        // mark payment as successful
         const enrollment = await Enrollment.findById(enrollmentId);
         if (!enrollment) {
             return res.status(404).json({ message: "Enrollment not found" });

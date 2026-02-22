@@ -42,24 +42,24 @@ function StatItem({ target, suffix, label }) {
 }
 
 const statsData = [
-  { target: 50000, suffix: "+", label: "Active Learners" },
+  { target: 5000, suffix: "+", label: "Active Learners" },
   { target: 800, suffix: "+", label: "Expert Courses" },
   { target: 200, suffix: "+", label: "Instructors" },
   { target: 99, suffix: "%", label: "Satisfaction" },
 ];
 
 const features = [
-  { icon: "⚡", title: "Smart Learning Paths", desc: "Our system analyzes your pace and crafts personalized roadmaps that evolve as you grow.", accent: "#00d4ff" },
-  { icon: "🎓", title: "Elite Instructors", desc: "Learn from verified experts at Google, MIT, and Y Combinator with proven real-world results.", accent: "#a78bfa" },
-  { icon: "🏆", title: "Verified Certificates", desc: "Earn blockchain-verified credentials that employers worldwide recognize and trust.", accent: "#34d399" },
-  { icon: "🔴", title: "Live Cohorts", desc: "Join live sessions, office hours, and peer groups that keep you accountable and inspired.", accent: "#f87171" },
-  { icon: "📊", title: "Progress Analytics", desc: "Beautiful dashboards track your streaks, scores, and momentum with surgical precision.", accent: "#fbbf24" },
-  { icon: "💬", title: "Community Network", desc: "Build your professional circle in curated Slack groups, forums, and mentorship circles.", accent: "#00d4ff" },
+  { icon: "⚡", title: "Structured Learning Paths", desc: "Choose from expertly designed roadmaps that match your goals and experience level.", accent: "#00d4ff" },
+  { icon: "🎓", title: "Expert Instructors", desc: "Learn from industry professionals who have real experience building products and leading teams.", accent: "#a78bfa" },
+  { icon: "🏆", title: "Verified Certificates", desc: "Get certificates on completing courses that you can share on LinkedIn and add to your resume.", accent: "#34d399" },
+  { icon: "🔴", title: "Live Cohorts", desc: "Join live sessions, office hours, and peer groups that keep you accountable and motivated.", accent: "#f87171" },
+  { icon: "📊", title: "Progress Tracking", desc: "See exactly where you stand with detailed dashboards showing your streaks, scores, and progress.", accent: "#fbbf24" },
+  { icon: "💬", title: "Community Support", desc: "Connect with fellow learners in discussion forums and mentorship groups to grow together.", accent: "#00d4ff" },
 ];
 
 const testimonials = [
-  { name: "Abhinav Sharma", role: "Full Stack Developer", text: "TutorPro took me from zero to job-ready in 4 months. The depth of instruction is unlike anything else on the market.", initials: "AS", grad: "linear-gradient(135deg, #00d4ff, #0094ff)" },
-  { name: "Rahul Verma", role: "Backend Developer", text: "I've tried every platform. TutorPro is operating on a completely different tier — the instructors, the production quality, everything.", initials: "RV", grad: "linear-gradient(135deg, #a78bfa, #7c3aed)" },
+  { name: "Abhinav Sharma", role: "Full Stack Developer", text: "TutorPro helped me go from beginner to getting my first dev job in 4 months. The course quality is really solid.", initials: "AS", grad: "linear-gradient(135deg, #00d4ff, #0094ff)" },
+  { name: "Rahul Verma", role: "Backend Developer", text: "I've used a lot of learning platforms and TutorPro stands out. Good instructors, clean interface, and the content actually sticks.", initials: "RV", grad: "linear-gradient(135deg, #a78bfa, #7c3aed)" },
   { name: "Sneha Gupta", role: "Product Designer", text: "Finally a platform that respects learners. Clean, focused, no fluff. The certificate boosted my career in ways I didn't expect.", initials: "SG", grad: "linear-gradient(135deg, #34d399, #059669)" },
 ];
 
@@ -257,7 +257,7 @@ const Home = () => {
         </h1>
 
         <p className="tp-animate-fade-up" style={{ animationDelay: "200ms", fontSize: "1.1rem", color: "#8ab0bf", lineHeight: 1.75, maxWidth: 560, textAlign: "center", marginBottom: 48 }}>
-          TutorPro connects ambitious learners with world-class instructors and expert-led courses — turning ambition into expertise, beautifully.
+          TutorPro connects learners with experienced instructors and hands-on courses — helping you build real skills, one lesson at a time.
         </p>
 
         <div className="tp-animate-fade-up" style={{ animationDelay: "300ms", display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center" }}>

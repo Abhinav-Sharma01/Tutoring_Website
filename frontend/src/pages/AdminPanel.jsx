@@ -201,29 +201,47 @@ const AdminPanel = () => {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {filteredUsers.map((u, i) => (
-                <div key={u._id || i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderRadius: 16, background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 12, background: `linear-gradient(135deg, ${roleColor[u.role] || accent}, ${roleColor[u.role] || accent}44)`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", color: "#fff" }}>
-                      {u.username?.charAt(0)?.toUpperCase() || "?"}
+                <div key={u._id || i} style={{ padding: "14px 20px", borderRadius: 16, background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 12, background: `linear-gradient(135deg, ${roleColor[u.role] || accent}, ${roleColor[u.role] || accent}44)`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", color: "#fff" }}>
+                        {u.username?.charAt(0)?.toUpperCase() || "?"}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: "0.92rem" }}>{u.username}</div>
+                        <div style={{ color: muted, fontSize: "0.8rem" }}>{u.email}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: "0.92rem" }}>{u.username}</div>
-                      <div style={{ color: muted, fontSize: "0.8rem" }}>{u.email}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <span style={{ padding: "4px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: `${roleColor[u.role] || accent}18`, color: roleColor[u.role] || accent, border: `1px solid ${roleColor[u.role] || accent}30`, textTransform: "capitalize" }}>
+                        {u.role}
+                      </span>
+                      <span style={{ color: muted, fontSize: "0.75rem" }}>
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                      </span>
+                      {u.role !== "admin" && (
+                        <button onClick={() => deleteUser(u._id, u.username)} style={{ padding: "5px 14px", borderRadius: 8, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", transition: "all 0.2s" }}>
+                          Remove
+                        </button>
+                      )}
                     </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ padding: "4px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: `${roleColor[u.role] || accent}18`, color: roleColor[u.role] || accent, border: `1px solid ${roleColor[u.role] || accent}30`, textTransform: "capitalize" }}>
-                      {u.role}
-                    </span>
-                    <span style={{ color: muted, fontSize: "0.75rem" }}>
-                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
-                    </span>
-                    {u.role !== "admin" && (
-                      <button onClick={() => deleteUser(u._id, u.username)} style={{ padding: "5px 14px", borderRadius: 8, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", transition: "all 0.2s" }}>
-                        Remove
-                      </button>
-                    )}
-                  </div>
+                  {u.enrolledCourses && u.enrolledCourses.length > 0 && (
+                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                      <span style={{ color: "#34d399", fontSize: "0.72rem", fontWeight: 700 }}>Enrolled:</span>
+                      {u.enrolledCourses.map((c, ci) => (
+                        <span key={ci} style={{ padding: "2px 8px", borderRadius: 6, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.15)", color: "#34d399", fontSize: "0.7rem" }}>{c}</span>
+                      ))}
+                    </div>
+                  )}
+                  {u.createdCourses && u.createdCourses.length > 0 && (
+                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                      <span style={{ color: "#a78bfa", fontSize: "0.72rem", fontWeight: 700 }}>Teaching:</span>
+                      {u.createdCourses.map((c, ci) => (
+                        <span key={ci} style={{ padding: "2px 8px", borderRadius: 6, background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.15)", color: "#a78bfa", fontSize: "0.7rem" }}>{c}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               {filteredUsers.length === 0 && <p style={{ color: muted, textAlign: "center", padding: 40 }}>No users found.</p>}
