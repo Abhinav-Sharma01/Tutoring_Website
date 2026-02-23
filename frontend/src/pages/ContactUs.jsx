@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import api from "../api/axios";
 
 const ContactUs = () => {
     const [loading, setLoading] = useState(false);
@@ -9,15 +10,20 @@ const ContactUs = () => {
     const muted = "#6b8fa0";
     const accent = "#00d4ff";
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate an API call
-        setTimeout(() => {
-            setLoading(false);
+        try {
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            await api.post("/auth/contact", data);
             toast.success("Message sent successfully! Our team will get back to you soon.");
             e.target.reset();
-        }, 1500);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to send message.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -64,22 +70,22 @@ const ContactUs = () => {
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                             <div>
                                 <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>First name</label>
-                                <input type="text" required placeholder="First name" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+                                <input type="text" name="firstName" required placeholder="First name" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
                             </div>
                             <div>
                                 <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Last name</label>
-                                <input type="text" required placeholder="Last name" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+                                <input type="text" name="lastName" required placeholder="Last name" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
                             </div>
                         </div>
 
                         <div>
                             <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Email</label>
-                            <input type="email" required placeholder="you@company.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+                            <input type="email" name="email" required placeholder="you@company.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
                         </div>
 
                         <div>
                             <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Message</label>
-                            <textarea required rows="4" placeholder="How can we help?" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s", resize: "vertical" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+                            <textarea required name="message" rows="4" placeholder="How can we help?" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s", resize: "vertical" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
                         </div>
 
                         <button disabled={loading} type="submit" style={{ width: "100%", padding: "16px", borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #0094ff)`, border: "none", color: "#001820", fontWeight: 800, fontSize: "1rem", cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, opacity: loading ? 0.7 : 1, transition: "transform 0.2s", boxShadow: "0 4px 20px rgba(0,212,255,0.3)" }} onMouseEnter={e => { if (!loading) e.target.style.transform = "translateY(-2px)" }} onMouseLeave={e => { if (!loading) e.target.style.transform = "translateY(0)" }}>

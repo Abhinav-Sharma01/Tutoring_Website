@@ -293,6 +293,24 @@ const forgotPassword = async (req, res) => {
     }
 };
 
+import { sendOtpEmail, sendContactEmail } from "../utils/email.js";
+const submitContactForm = async (req, res) => {
+    try {
+        const { firstName, lastName, email, message } = req.body;
+        if (!firstName || !lastName || !email || !message) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const fullName = `${firstName} ${lastName}`;
+        await sendContactEmail(fullName, email, message);
+
+        res.status(200).json({ message: "Message sent successfully" });
+    } catch (error) {
+        console.error("Contact form error:", error);
+        res.status(500).json({ message: "Failed to send message. Please try again later." });
+    }
+};
+
 const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword, confirmPassword } = req.body;
