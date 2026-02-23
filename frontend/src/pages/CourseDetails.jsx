@@ -14,6 +14,11 @@ const CourseDetails = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [activeLesson, setActiveLesson] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [showAddLesson, setShowAddLesson] = useState(false);
+  const [newLessonTitle, setNewLessonTitle] = useState("");
+  const [newLessonDuration, setNewLessonDuration] = useState("");
+  const [newLessonVideo, setNewLessonVideo] = useState(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +72,38 @@ const CourseDetails = () => {
     } catch (err) {
       toast.error(err.response?.data?.message || "Payment failed");
     } finally { setLoading(false); }
+  };
+
+  const handleAddLesson = async (e) => {
+    e.preventDefault();
+    if (!newLessonTitle || !newLessonVideo) return toast.error("Title and video are required");
+
+    setUploadingVideo(true);
+    try {
+      // 1. Upload video to Cloudinary
+      const formData = new FormData();
+      formData.append("video", newLessonVideo);
+      const uploadRes = await api.post("/upload/video", formData, { headers: { "Content-Type": "multipart/form-data" } });
+      const videoUrl = uploadRes.data.videoUrl;
+
+      // 2. Append new lesson to existing course
+      const newLesson = { title: newLessonTitle, duration: newLessonDuration, videoUrl };
+      const updatedLessons = [...course.lessons, newLesson];
+
+      const updateRes = await api.put(`/courses/${id}`, { lessons: updatedLessons });
+
+      // 3. Update local state
+      setCourse(updateRes.data.course);
+      setShowAddLesson(false);
+      setNewLessonTitle("");
+      setNewLessonDuration("");
+      setNewLessonVideo(null);
+      toast.success("Lesson added successfully! 🎉");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to add lesson");
+    } finally {
+      setUploadingVideo(false);
+    }
   };
 
   useEffect(() => {
@@ -124,6 +161,8 @@ const CourseDetails = () => {
     const count = reviews.filter(r => r.rating === star).length;
     return { star, count, pct: reviews.length > 0 ? (count / reviews.length) * 100 : 0 };
   });
+
+  const canEdit = user && course && (user.role === "admin" || (user.role === "tutor" && course.tutorId?._id === user.id));
 
   return (
     <div className="tp-cd tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
@@ -236,6 +275,20 @@ const CourseDetails = () => {
                     )}
                   </div>
                 ))}
+
+                {/* Add Lesson Button for Instructors/Admins */}
+                {canEdit && (
+                  <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(0,212,255,0.02)" }}>
+                    <button
+                      onClick={() => setShowAddLesson(true)}
+                      style={{ width: "100%", padding: "12px", borderRadius: 10, background: "rgba(0,212,255,0.08)", border: "1px dashed rgba(0,212,255,0.4)", color: accent, fontWeight: 700, fontSize: "0.9rem", cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", transition: "all 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(0,212,255,0.12)"}
+                      onMouseLeave={e => e.currentTarget.style.background = "rgba(0,212,255,0.08)"}
+                    >
+                      + Add New Lesson
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -329,6 +382,43 @@ const CourseDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Lesson Modal */}
+      {showAddLesson && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div style={{ position: "absolute", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease" }} onClick={() => setShowAddLesson(false)} />
+          <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 24, padding: 32, width: "100%", maxWidth: 500, position: "relative", zIndex: 1, boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08)", animation: "tp-fade-up 0.4s ease forwards" }}>
+            <button onClick={() => setShowAddLesson(false)} style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: muted, fontSize: "1.5rem", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = muted}>×</button>
+            <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.8rem", margin: "0 0 24px", color: text }}>Add New Lesson</h3>
+            <form onSubmit={handleAddLesson} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Lesson Title *</label>
+                <input type="text" required value={newLessonTitle} onChange={e => setNewLessonTitle(e.target.value)} placeholder="e.g. Introduction to React" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Duration (Optional)</label>
+                <input type="text" value={newLessonDuration} onChange={e => setNewLessonDuration(e.target.value)} placeholder="e.g. 15 min" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Video File *</label>
+                <div style={{ position: "relative", width: "100%", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px dashed rgba(0,212,255,0.3)", padding: 20, textAlign: "center", cursor: "pointer", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(0,212,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(0,0,0,0.2)"}>
+                  <input type="file" required accept="video/*" onChange={e => setNewLessonVideo(e.target.files[0])} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }} />
+                  {newLessonVideo ? (
+                    <div style={{ color: accent, fontWeight: 600, fontSize: "0.9rem" }}>📹 {newLessonVideo.name}</div>
+                  ) : (
+                    <div style={{ color: muted, fontSize: "0.9rem" }}>Click to select a video file</div>
+                  )}
+                </div>
+              </div>
+              <button disabled={uploadingVideo} type="submit" style={{ width: "100%", padding: "14px", borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #0094ff)`, border: "none", color: "#001820", fontWeight: 800, fontSize: "1rem", cursor: uploadingVideo ? "not-allowed" : "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, opacity: uploadingVideo ? 0.7 : 1 }}>
+                {uploadingVideo ? (
+                  <><span style={{ width: 16, height: 16, border: "2px solid rgba(0,24,32,0.3)", borderTopColor: "#001820", borderRadius: "50%", animation: "tp-spin 0.6s linear infinite" }} /> Uploading Video...</>
+                ) : "Upload & Save Lesson"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
