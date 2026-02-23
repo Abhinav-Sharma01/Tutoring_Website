@@ -1,25 +1,25 @@
 import express from "express";
-import {User} from "../models/User.model.js";
-import {Course} from "../models/Course.model.js";
+import { User } from "../models/User.model.js";
+import { Course } from "../models/Course.model.js";
 
-const createCourse = async(req,res) => {
-    try{
+const createCourse = async (req, res) => {
+    try {
         const userId = req.user.id;
         const userData = await User.findById(userId);
 
-        if(userData.role !== "tutor" && userData.role !== "admin"){
-            return res.status(403).json({message: "Not allowed to create a course"});
+        if (userData.role !== "tutor" && userData.role !== "admin") {
+            return res.status(403).json({ message: "Not allowed to create a course" });
         }
 
-        const {title,description,price,category,level,lessons,thumbnail} = req.body;
+        const { title, description, price, category, level, lessons, thumbnail } = req.body;
 
-        if(!title || !description || !price || !category || !level || !lessons){
-            return res.status(400).json({message: "All fields are required..."});
+        if (!title || !description || !price || !category || !level || !lessons) {
+            return res.status(400).json({ message: "All fields are required..." });
         }
 
-        const courseExists = await Course.findOne({title});
-        if(courseExists){
-            return res.status(400).json({message: "Course title already exists..."});
+        const courseExists = await Course.findOne({ title });
+        if (courseExists) {
+            return res.status(400).json({ message: "Course title already exists..." });
         }
 
         const course = await Course.create({
@@ -33,10 +33,10 @@ const createCourse = async(req,res) => {
             tutorId: userData._id
         })
 
-        res.status(201).json({message: "Course created successfully..",course});
-    }catch(error){
+        res.status(201).json({ message: "Course created successfully..", course });
+    } catch (error) {
         console.error("Create course error", error.message);
-        return res.status(500).json({message: "Internal server error while creating the course..."});
+        return res.status(500).json({ message: "Internal server error while creating the course..." });
     }
 }
 
@@ -114,9 +114,9 @@ const updateCourse = async (req, res) => {
             course,
         });
 
-    }catch (error) {
-        console.error("Update course error:", error.message);
-        res.status(500).json({ message: "Internal server error while updating course" });
+    } catch (error) {
+        console.error("Update course error:", error);
+        res.status(500).json({ message: "Internal server error while updating course", error: error.message, stack: error.stack });
     }
 };
 
@@ -138,8 +138,8 @@ const deleteCourse = async (req, res) => {
         const allowedTutor = course.tutorId.toString() === user._id.toString();
         const isAdmin = user.role === "admin";
 
-        if(!allowedTutor && !isAdmin){
-            return res.status(403).json({message: "You are not allowed to delete this course..."});
+        if (!allowedTutor && !isAdmin) {
+            return res.status(403).json({ message: "You are not allowed to delete this course..." });
         }
 
         await course.deleteOne();

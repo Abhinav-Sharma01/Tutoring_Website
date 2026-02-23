@@ -87,7 +87,8 @@ const CourseDetails = () => {
       const videoUrl = uploadRes.data.videoUrl;
 
       // 2. Append new lesson to existing course
-      const newLesson = { title: newLessonTitle, duration: newLessonDuration, videoUrl };
+      const finalDuration = newLessonDuration.trim() !== "" ? newLessonDuration : "0 min";
+      const newLesson = { title: newLessonTitle, duration: finalDuration, videoUrl };
       const updatedLessons = [...course.lessons, newLesson];
 
       const updateRes = await api.put(`/courses/${id}`, { lessons: updatedLessons });
