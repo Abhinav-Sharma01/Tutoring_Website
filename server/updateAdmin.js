@@ -5,8 +5,9 @@ import bcrypt from "bcryptjs";
 
 const updateAdmin = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("Connected to MongoDB");
+        const uri = `${process.env.MONGO_URI}/${process.env.DB_NAME}?appName=Cluster0`;
+        await mongoose.connect(uri);
+        console.log("Connected to MongoDB at", uri);
 
         // The precise email and password requested by the user
         const targetEmail = "ab.qrc123@gmail.com";
