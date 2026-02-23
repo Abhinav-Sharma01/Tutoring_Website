@@ -2,7 +2,7 @@ import { User } from "../models/User.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { sendOtpEmail } from "../utils/email.js";
+import { sendOtpEmail, sendContactEmail } from "../utils/email.js";
 import { OAuth2Client } from "google-auth-library";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -293,7 +293,6 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-import { sendOtpEmail, sendContactEmail } from "../utils/email.js";
 const submitContactForm = async (req, res) => {
     try {
         const { firstName, lastName, email, message } = req.body;
