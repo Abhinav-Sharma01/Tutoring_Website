@@ -357,4 +357,5 @@ export {
     googleAuth,
     forgotPassword,
     resetPassword,
+    submitContactForm
 }
