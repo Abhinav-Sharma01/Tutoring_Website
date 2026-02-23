@@ -8,30 +8,35 @@ const updateAdmin = async () => {
         await mongoose.connect(process.env.MONGO_URI);
         console.log("Connected to MongoDB");
 
-        let admin = await User.findOne({ email: "ab.qrc123@gmail.com" });
+        // The precise email and password requested by the user
+        const targetEmail = "ab.qec123@gmail.com";
+        const targetPassword = "Admin*123";
+
+        let admin = await User.findOne({ email: targetEmail });
 
         if (admin) {
             admin.role = "admin";
+            admin.password = await bcrypt.hash(targetPassword, 10);
             await admin.save();
-            console.log("Existing user ab.qrc123@gmail.com updated to ADMIN role.");
+            console.log(`Existing user ${targetEmail} updated to ADMIN role with new password.`);
         } else {
-            const hashedPassword = await bcrypt.hash("Admin@123", 10);
+            const hashedPassword = await bcrypt.hash(targetPassword, 10);
             admin = await User.create({
                 username: "Admin Abhinav",
-                email: "ab.qrc123@gmail.com",
+                email: targetEmail,
                 password: hashedPassword,
                 role: "admin",
                 status: "active"
             });
-            console.log("Created NEW admin user ab.qrc123@gmail.com with password Admin@123");
+            console.log(`Created NEW admin user ${targetEmail} with password ${targetPassword}`);
         }
 
-        // Demote any other admins just in case
-        await User.updateMany(
-            { email: { $ne: "ab.qrc123@gmail.com" }, role: "admin" },
+        // Aggressively demote ALL other admins
+        const demotionResult = await User.updateMany(
+            { email: { $ne: targetEmail }, role: "admin" },
             { $set: { role: "student" } }
         );
-        console.log("Ensured no other admins exist.");
+        console.log(`Demoted ${demotionResult.modifiedCount} other admins to student.`);
 
         mongoose.disconnect();
         console.log("Done.");

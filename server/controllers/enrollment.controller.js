@@ -63,6 +63,21 @@ const checkEnrollment = async (req, res) => {
     const studentId = req.user.id;
     const { courseId } = req.params;
 
+    // Admins get automatic access
+    if (req.user.role === "admin") {
+      return res.status(200).json({ enrolled: true });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Course creator gets automatic access
+    if (req.user.role === "tutor" && course.tutorId.toString() === studentId) {
+      return res.status(200).json({ enrolled: true });
+    }
+
     const enrollment = await Enrollment.findOne({ studentId, courseId });
 
     return res.status(200).json({
@@ -122,10 +137,10 @@ const getEnrollmentStats = async (req, res) => {
 };
 
 export {
-    enrollCourse,
-    getMyEnrollments,
-    checkEnrollment,
-    completeCourse,
-    getEnrollmentStats
+  enrollCourse,
+  getMyEnrollments,
+  checkEnrollment,
+  completeCourse,
+  getEnrollmentStats
 };
 

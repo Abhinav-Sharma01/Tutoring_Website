@@ -12,6 +12,7 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [activeLesson, setActiveLesson] = useState(0);
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -186,24 +187,50 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            {/* Lessons */}
+            {/* Lessons & Video Player */}
             {course.lessons && course.lessons.length > 0 && (
-              <div className="tp-card" style={{ padding: 0, marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "100ms", opacity: 0, animationFillMode: "forwards" }}>
-                <div style={{ padding: "20px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className="tp-card" style={{ padding: 0, marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "100ms", opacity: 0, animationFillMode: "forwards", overflow: "hidden" }}>
+
+                {/* Video Player */}
+                {isEnrolled && course.lessons[activeLesson]?.videoUrl && (
+                  <div style={{ background: "#000", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative", paddingTop: "56.25%" }}>
+                    <video
+                      key={course.lessons[activeLesson].videoUrl}
+                      controls
+                      controlsList="nodownload"
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "contain" }}
+                      src={course.lessons[activeLesson].videoUrl}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+
+                <div style={{ padding: "20px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(6,14,24,0.3)" }}>
                   <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: 0 }}>Course Content</h2>
                   <span style={{ fontSize: "0.82rem", color: muted, fontWeight: 600 }}>{course.lessons.length} lesson{course.lessons.length !== 1 ? "s" : ""}</span>
                 </div>
                 {course.lessons.map((lesson, i) => (
-                  <div key={i} className="tp-lesson-row">
+                  <div
+                    key={i}
+                    className="tp-lesson-row"
+                    onClick={() => isEnrolled && setActiveLesson(i)}
+                    style={{
+                      cursor: isEnrolled ? "pointer" : "default",
+                      background: activeLesson === i && isEnrolled ? "rgba(0,212,255,0.05)" : "transparent",
+                      borderLeft: activeLesson === i && isEnrolled ? `3px solid ${accent}` : "3px solid transparent",
+                      paddingLeft: activeLesson === i && isEnrolled ? "17px" : "20px"
+                    }}
+                  >
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(0,212,255,0.08)", border: "1px solid rgba(0,212,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: accent, fontSize: "0.78rem", fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+                      <div style={{ width: 32, height: 32, borderRadius: 10, background: activeLesson === i && isEnrolled ? `linear-gradient(135deg, ${accent}, #0094ff)` : "rgba(0,212,255,0.08)", border: activeLesson === i && isEnrolled ? "none" : "1px solid rgba(0,212,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: activeLesson === i && isEnrolled ? "#001820" : accent, fontSize: "0.78rem", fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
                       <div>
-                        <span style={{ fontWeight: 700, fontSize: "0.9rem", display: "block" }}>{lesson.title}</span>
-                        {lesson.duration && <span style={{ fontSize: "0.76rem", color: muted }}>{lesson.duration}</span>}
+                        <span style={{ fontWeight: (activeLesson === i && isEnrolled) ? 800 : 700, color: (activeLesson === i && isEnrolled) ? "#fff" : text, fontSize: "0.9rem", display: "block", transition: "all 0.2s" }}>{lesson.title}</span>
+                        {lesson.duration && <span style={{ fontSize: "0.76rem", color: (activeLesson === i && isEnrolled) ? "#a2c1d1" : muted }}>{lesson.duration}</span>}
                       </div>
                     </div>
                     {isEnrolled ? (
-                      <span style={{ color: accent, fontSize: "0.85rem" }}>▶</span>
+                      <span style={{ color: activeLesson === i ? accent : muted, fontSize: "0.85rem", fontWeight: activeLesson === i ? 700 : 400 }}>{activeLesson === i ? "▶ Playing" : "▶"}</span>
                     ) : (
                       <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.85rem" }}>🔒</span>
                     )}
