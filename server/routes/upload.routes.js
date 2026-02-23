@@ -3,12 +3,15 @@ import { protect } from "../middlewares/auth.middleware.js";
 import { uploadImage, uploadVideo } from "../middlewares/multer.middleware.js";
 
 import {
+    uploadVideoFile,
     uploadAvatar,
     uploadThumbnail,
     uploadLessonVideo
 } from "../controllers/upload.controller.js";
 
 const router = express.Router();
+
+router.post("/video", protect, uploadVideo.single("video"), uploadVideoFile);
 
 router.post("/avatar", protect, uploadImage.single("avatar"), uploadAvatar);
 

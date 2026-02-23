@@ -3,6 +3,20 @@ import { Course } from "../models/Course.model.js";
 
 
 
+const uploadVideoFile = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No video uploaded" });
+        }
+        res.status(200).json({
+            message: "Video uploaded successfully",
+            videoUrl: req.file.path
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Video upload failed" });
+    }
+};
+
 const uploadAvatar = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -78,7 +92,8 @@ const uploadLessonVideo = async (req, res) => {
 };
 
 
-export{
+export {
+    uploadVideoFile,
     uploadAvatar,
     uploadThumbnail,
     uploadLessonVideo

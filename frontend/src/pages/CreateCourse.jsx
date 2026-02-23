@@ -15,6 +15,7 @@ const CreateCourse = () => {
         title: "", description: "", price: "", category: "web development", level: "beginner", thumbnail: "",
     });
     const [lessons, setLessons] = useState([{ title: "", duration: "", videoUrl: "" }]);
+    const [uploading, setUploading] = useState(null);
 
     useEffect(() => {
         if (user && user.role !== "tutor" && user.role !== "admin") {
@@ -80,6 +81,25 @@ const CreateCourse = () => {
         const updated = [...lessons];
         updated[i][field] = value;
         setLessons(updated);
+    };
+
+    const handleVideoUpload = async (index, file) => {
+        if (!file) return;
+        setUploading(index);
+        const formData = new FormData();
+        formData.append("video", file);
+
+        try {
+            const res = await api.post("/upload/video", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            updateLesson(index, "videoUrl", res.data.videoUrl);
+            toast.success("Video uploaded successfully!");
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to upload video");
+        } finally {
+            setUploading(null);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -195,7 +215,27 @@ const CreateCourse = () => {
                                     <input className="tp-cc-input" placeholder="Lesson title *" value={lesson.title} onChange={e => updateLesson(i, "title", e.target.value)} />
                                     <input className="tp-cc-input" placeholder="Duration (e.g. 45 min) *" value={lesson.duration} onChange={e => updateLesson(i, "duration", e.target.value)} />
                                 </div>
-                                <input className="tp-cc-input" placeholder="Video URL (optional)" value={lesson.videoUrl} onChange={e => updateLesson(i, "videoUrl", e.target.value)} />
+
+                                <label style={{ display: "block", fontSize: "0.80rem", fontWeight: 700, color: muted, marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase" }}>Video Content</label>
+                                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                                    <input className="tp-cc-input" style={{ flex: 1 }} placeholder="Paste video URL or upload file →" value={lesson.videoUrl} onChange={e => updateLesson(i, "videoUrl", e.target.value)} />
+                                    <div style={{ position: "relative" }}>
+                                        <button type="button" disabled={uploading === i} style={{ padding: "12px 18px", background: "rgba(0,212,255,0.08)", border: "1px dashed rgba(0,212,255,0.4)", borderRadius: 10, color: accent, fontSize: "0.85rem", fontWeight: 700, cursor: uploading === i ? "not-allowed" : "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}>
+                                            {uploading === i ? (
+                                                <><span style={{ width: 14, height: 14, border: "2px solid rgba(0,212,255,0.3)", borderTopColor: accent, borderRadius: "50%", display: "inline-block", animation: "tp-spin 0.6s linear infinite" }} /> Uploading...</>
+                                            ) : (
+                                                <>📥 Upload Video</>
+                                            )}
+                                        </button>
+                                        <input
+                                            type="file"
+                                            accept="video/mp4,video/webm"
+                                            disabled={uploading === i}
+                                            onChange={e => handleVideoUpload(i, e.target.files[0])}
+                                            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
