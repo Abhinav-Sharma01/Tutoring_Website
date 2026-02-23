@@ -9,8 +9,8 @@ const updateAdmin = async () => {
         console.log("Connected to MongoDB");
 
         // The precise email and password requested by the user
-        const targetEmail = "ab.qec123@gmail.com";
-        const targetPassword = "Admin*123";
+        const targetEmail = "ab.qrc123@gmail.com";
+        const targetPassword = "Admin@123";
 
         let admin = await User.findOne({ email: targetEmail });
 
