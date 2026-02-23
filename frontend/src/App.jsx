@@ -15,7 +15,10 @@ import Register from "./pages/Register";
 import CreateCourse from "./pages/CreateCourse";
 import ForgotPassword from "./pages/ForgotPassword";
 import ScrollToTop from "./components/ScrollToTop";
-
+import Help from "./pages/Help";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import Footer from "./components/Footer";
 function AnimatedRoutes() {
   const location = useLocation();
   return (
@@ -33,6 +36,9 @@ function AnimatedRoutes() {
         <Route path="/instructor" element={<ProtectedRoute><InstructorDashboard /></ProtectedRoute>} />
         <Route path="/create-course" element={<ProtectedRoute><CreateCourse /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
     </div>
   );
@@ -69,6 +75,7 @@ function App() {
         }}
       />
       <AnimatedRoutes />
+      <Footer />
     </BrowserRouter>
   );
 }
