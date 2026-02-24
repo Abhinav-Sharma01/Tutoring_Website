@@ -386,9 +386,9 @@ const CourseDetails = () => {
 
       {/* Add Lesson Modal */}
       {showAddLesson && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 20px", overflowY: "auto" }}>
-          <div style={{ position: "fixed", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease", zIndex: -1 }} onClick={() => setShowAddLesson(false)} />
-          <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 24, padding: 32, width: "100%", maxWidth: 500, position: "relative", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08)", animation: "tp-fade-up 0.4s ease forwards", margin: "auto" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+          <div style={{ position: "absolute", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease", zIndex: -1 }} onClick={() => setShowAddLesson(false)} />
+          <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 24, padding: "36px 32px", width: "100%", maxWidth: 500, position: "relative", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08)", animation: "tp-fade-up 0.4s ease forwards" }}>
             <button onClick={() => setShowAddLesson(false)} style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: muted, fontSize: "1.5rem", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = muted}>×</button>
             <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.8rem", margin: "0 0 24px", color: text }}>Add New Lesson</h3>
             <form onSubmit={handleAddLesson} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
