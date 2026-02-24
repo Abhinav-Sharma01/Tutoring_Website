@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { sendOtpEmail, sendContactEmail } from "../utils/email.js";
 import { OAuth2Client } from "google-auth-library";
+import { deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -389,19 +390,25 @@ export const updateProfile = async (req, res) => {
             }
         }
 
+        const currentUser = await User.findById(userId);
+        if (!currentUser) return res.status(404).json({ message: "User not found." });
+
         const updateData = {};
         if (username) updateData.username = username;
         if (email) updateData.email = email.toLowerCase();
         if (about !== undefined) updateData.about = about;
-        if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
+        if (avatar_url !== undefined) {
+            updateData.avatar_url = avatar_url;
+            if (currentUser.avatar_url && currentUser.avatar_url !== avatar_url) {
+                await deleteFromCloudinary(currentUser.avatar_url);
+            }
+        }
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $set: updateData },
             { new: true, runValidators: true }
         ).select("-password -refreshToken");
-
-        if (!updatedUser) return res.status(404).json({ message: "User not found." });
 
         await Notification.create({
             recipient: updatedUser._id,

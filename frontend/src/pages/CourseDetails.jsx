@@ -107,6 +107,38 @@ const CourseDetails = () => {
     }
   };
 
+  const handleDeleteLesson = async (e, lessonIndex) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this lesson? This action cannot be undone.")) return;
+
+    try {
+      const updatedLessons = course.lessons.filter((_, i) => i !== lessonIndex);
+      const res = await api.put(`/courses/${id}`, { lessons: updatedLessons });
+      setCourse(res.data.course);
+
+      if (activeLesson === lessonIndex) setActiveLesson(0);
+      else if (activeLesson > lessonIndex) setActiveLesson(activeLesson - 1);
+
+      toast.success("Lesson deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete lesson");
+    }
+  };
+
+  const handleDeleteCourse = async () => {
+    if (!window.confirm("CRITICAL WARNING: Are you absolutely sure you want to PERMANENTLY delete this entire course? This action cannot be undone.")) return;
+
+    try {
+      await api.delete(`/courses/${id}`);
+      toast.success("Course deleted successfully");
+      navigate("/courses");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete course");
+    }
+  };
+
   useEffect(() => {
     const s = document.createElement("style");
     s.textContent = `@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;600;700;800;900&display=swap');
@@ -269,11 +301,32 @@ const CourseDetails = () => {
                         {lesson.duration && <span style={{ fontSize: "0.76rem", color: (activeLesson === i && isEnrolled) ? "#a2c1d1" : muted }}>{lesson.duration}</span>}
                       </div>
                     </div>
-                    {isEnrolled ? (
-                      <span style={{ color: activeLesson === i ? accent : muted, fontSize: "0.85rem", fontWeight: activeLesson === i ? 700 : 400 }}>{activeLesson === i ? "▶ Playing" : "▶"}</span>
-                    ) : (
-                      <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.85rem" }}>🔒</span>
-                    )}
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      {isEnrolled ? (
+                        <span style={{ color: activeLesson === i ? accent : muted, fontSize: "0.85rem", fontWeight: activeLesson === i ? 700 : 400 }}>{activeLesson === i ? "▶ Playing" : "▶"}</span>
+                      ) : (
+                        <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.85rem" }}>🔒</span>
+                      )}
+
+                      {/* Delete Lesson Button (Only for Admins/Tutors) */}
+                      {canEdit && (
+                        <button
+                          onClick={(e) => handleDeleteLesson(e, i)}
+                          style={{
+                            background: "none", border: "none", padding: "6px",
+                            color: "rgba(248,113,113,0.5)", cursor: "pointer",
+                            transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center"
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color = "#f87171"; e.currentTarget.style.transform = "scale(1.1)"; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = "rgba(248,113,113,0.5)"; e.currentTarget.style.transform = "scale(1)"; }}
+                          title="Delete Lesson"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
 
@@ -380,47 +433,75 @@ const CourseDetails = () => {
                 </div>
               </div>
             </div>
+
+            {/* Delete Entire Course Button (Only for Admins/Tutors) */}
+            {canEdit && (
+              <div style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <button
+                  onClick={handleDeleteCourse}
+                  style={{
+                    width: "100%", padding: "14px", borderRadius: 12,
+                    background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.2)",
+                    color: "#f87171", fontWeight: 700, fontSize: "0.95rem",
+                    cursor: "pointer", transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = "rgba(248,113,113,0.15)";
+                    e.currentTarget.style.border = "1px solid rgba(248,113,113,0.4)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = "rgba(248,113,113,0.05)";
+                    e.currentTarget.style.border = "1px solid rgba(248,113,113,0.2)";
+                  }}
+                >
+                  Delete Entire Course
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Add Lesson Modal */}
-      {showAddLesson && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-          <div style={{ position: "absolute", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease", zIndex: -1 }} onClick={() => setShowAddLesson(false)} />
-          <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 24, padding: "36px 32px", width: "100%", maxWidth: 500, position: "relative", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08)", animation: "tp-fade-up 0.4s ease forwards" }}>
-            <button onClick={() => setShowAddLesson(false)} style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: muted, fontSize: "1.5rem", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = muted}>×</button>
-            <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.8rem", margin: "0 0 24px", color: text }}>Add New Lesson</h3>
-            <form onSubmit={handleAddLesson} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Lesson Title *</label>
-                <input type="text" autoFocus required value={newLessonTitle} onChange={e => setNewLessonTitle(e.target.value)} placeholder="e.g. Introduction to React" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Duration (Optional)</label>
-                <input type="text" value={newLessonDuration} onChange={e => setNewLessonDuration(e.target.value)} placeholder="e.g. 15 min" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Video File *</label>
-                <div style={{ position: "relative", width: "100%", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px dashed rgba(0,212,255,0.3)", padding: 20, textAlign: "center", cursor: "pointer", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(0,212,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(0,0,0,0.2)"}>
-                  <input type="file" required accept="video/*" onChange={e => setNewLessonVideo(e.target.files[0])} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }} />
-                  {newLessonVideo ? (
-                    <div style={{ color: accent, fontWeight: 600, fontSize: "0.9rem" }}>📹 {newLessonVideo.name}</div>
-                  ) : (
-                    <div style={{ color: muted, fontSize: "0.9rem" }}>Click to select a video file</div>
-                  )}
-                </div>
-              </div>
-              <button disabled={uploadingVideo} type="submit" style={{ width: "100%", padding: "14px", borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #0094ff)`, border: "none", color: "#001820", fontWeight: 800, fontSize: "1rem", cursor: uploadingVideo ? "not-allowed" : "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, opacity: uploadingVideo ? 0.7 : 1 }}>
-                {uploadingVideo ? (
-                  <><span style={{ width: 16, height: 16, border: "2px solid rgba(0,24,32,0.3)", borderTopColor: "#001820", borderRadius: "50%", animation: "tp-spin 0.6s linear infinite" }} /> Uploading Video...</>
-                ) : "Upload & Save Lesson"}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
+
+      {/* Add Lesson Modal */ }
+  {
+    showAddLesson && (
+      <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease", zIndex: -1 }} onClick={() => setShowAddLesson(false)} />
+        <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 24, padding: "36px 32px", width: "100%", maxWidth: 500, position: "relative", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08)", animation: "tp-fade-up 0.4s ease forwards" }}>
+          <button onClick={() => setShowAddLesson(false)} style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: muted, fontSize: "1.5rem", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = muted}>×</button>
+          <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.8rem", margin: "0 0 24px", color: text }}>Add New Lesson</h3>
+          <form onSubmit={handleAddLesson} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Lesson Title *</label>
+              <input type="text" autoFocus required value={newLessonTitle} onChange={e => setNewLessonTitle(e.target.value)} placeholder="e.g. Introduction to React" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Duration (Optional)</label>
+              <input type="text" value={newLessonDuration} onChange={e => setNewLessonDuration(e.target.value)} placeholder="e.g. 15 min" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Video File *</label>
+              <div style={{ position: "relative", width: "100%", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px dashed rgba(0,212,255,0.3)", padding: 20, textAlign: "center", cursor: "pointer", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(0,212,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(0,0,0,0.2)"}>
+                <input type="file" required accept="video/*" onChange={e => setNewLessonVideo(e.target.files[0])} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }} />
+                {newLessonVideo ? (
+                  <div style={{ color: accent, fontWeight: 600, fontSize: "0.9rem" }}>📹 {newLessonVideo.name}</div>
+                ) : (
+                  <div style={{ color: muted, fontSize: "0.9rem" }}>Click to select a video file</div>
+                )}
+              </div>
+            </div>
+            <button disabled={uploadingVideo} type="submit" style={{ width: "100%", padding: "14px", borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #0094ff)`, border: "none", color: "#001820", fontWeight: 800, fontSize: "1rem", cursor: uploadingVideo ? "not-allowed" : "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, opacity: uploadingVideo ? 0.7 : 1 }}>
+              {uploadingVideo ? (
+                <><span style={{ width: 16, height: 16, border: "2px solid rgba(0,24,32,0.3)", borderTopColor: "#001820", borderRadius: "50%", animation: "tp-spin 0.6s linear infinite" }} /> Uploading Video...</>
+              ) : "Upload & Save Lesson"}
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+    </div >
   );
 };
 

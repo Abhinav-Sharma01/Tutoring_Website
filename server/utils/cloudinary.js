@@ -30,3 +30,25 @@ export const uploadOnCloudinary = async (localFilePath) => {
         return null;
     }
 };
+
+export const deleteFromCloudinary = async (cloudUrl) => {
+    try {
+        if (!cloudUrl) return null;
+
+        // Example URL: http://res.cloudinary.com/dvzxyz/video/upload/v123.../tutorpro_videos/filename.mp4
+        const urlParts = cloudUrl.split("/");
+        const filenameWithExt = urlParts[urlParts.length - 1];
+        const folder = urlParts[urlParts.length - 2];
+        const filename = filenameWithExt.split(".")[0];
+        const publicId = `${folder}/${filename}`;
+
+        const isVideo = cloudUrl.includes("/video/");
+        const resourceType = isVideo ? "video" : "image";
+
+        const response = await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+        return response;
+    } catch (error) {
+        console.error("Cloudinary delete failed:", error);
+        return null;
+    }
+};

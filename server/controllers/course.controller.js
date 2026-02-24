@@ -1,6 +1,7 @@
 import express from "express";
 import { User } from "../models/User.model.js";
 import { Course } from "../models/Course.model.js";
+import { deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const createCourse = async (req, res) => {
     try {
@@ -101,6 +102,20 @@ const updateCourse = async (req, res) => {
 
         const allowedUpdates = ["title", "description", "price", "category", "thumbnail", "level", "lessons"];
 
+        if (req.body.thumbnail && course.thumbnail && req.body.thumbnail !== course.thumbnail) {
+            await deleteFromCloudinary(course.thumbnail);
+        }
+
+        if (req.body.lessons && Array.isArray(req.body.lessons)) {
+            const oldVideoUrls = course.lessons.map(l => l.videoUrl).filter(Boolean);
+            const newVideoUrls = req.body.lessons.map(l => l.videoUrl).filter(Boolean);
+            const videosToDelete = oldVideoUrls.filter(url => !newVideoUrls.includes(url));
+
+            for (const url of videosToDelete) {
+                await deleteFromCloudinary(url);
+            }
+        }
+
         allowedUpdates.forEach(field => {
             if (req.body[field] !== undefined) {
                 course[field] = req.body[field];
@@ -140,6 +155,17 @@ const deleteCourse = async (req, res) => {
 
         if (!allowedTutor && !isAdmin) {
             return res.status(403).json({ message: "You are not allowed to delete this course..." });
+        }
+
+        if (course.thumbnail) {
+            await deleteFromCloudinary(course.thumbnail);
+        }
+        if (course.lessons && course.lessons.length > 0) {
+            for (const lesson of course.lessons) {
+                if (lesson.videoUrl) {
+                    await deleteFromCloudinary(lesson.videoUrl);
+                }
+            }
         }
 
         await course.deleteOne();
