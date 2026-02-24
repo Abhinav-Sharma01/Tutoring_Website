@@ -349,6 +349,64 @@ const resetPassword = async (req, res) => {
     }
 };
 
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { username, email, about, avatar_url } = req.body;
+
+        if (username || email) {
+            const query = [];
+            if (username) query.push({ username: new RegExp(`^${username}$`, "i") });
+            if (email) query.push({ email: email.toLowerCase() });
+
+            const existingUser = await User.findOne({
+                _id: { $ne: userId },
+                $or: query
+            });
+
+            if (existingUser) {
+                if (existingUser.username.toLowerCase() === username?.toLowerCase()) {
+                    return res.status(400).json({ message: "Username is already taken." });
+                }
+                if (existingUser.email === email?.toLowerCase()) {
+                    return res.status(400).json({ message: "Email is already taken." });
+                }
+            }
+        }
+
+        const updateData = {};
+        if (username) updateData.username = username;
+        if (email) updateData.email = email.toLowerCase();
+        if (about !== undefined) updateData.about = about;
+        if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).select("-password -refreshToken");
+
+        if (!updatedUser) return res.status(404).json({ message: "User not found." });
+
+        res.json({
+            message: "Profile updated successfully",
+            user: {
+                id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                status: updatedUser.status,
+                about: updatedUser.about,
+                avatar_url: updatedUser.avatar_url,
+            }
+        });
+
+    } catch (error) {
+        console.error("Update profile error:", error.message);
+        res.status(500).json({ message: "Failed to update profile." });
+    }
+};
+
 export {
     registerUser,
     loginUser,
@@ -357,5 +415,6 @@ export {
     googleAuth,
     forgotPassword,
     resetPassword,
-    submitContactForm
+    submitContactForm,
+    updateProfile
 }

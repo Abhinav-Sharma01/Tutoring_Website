@@ -135,6 +135,7 @@ const Navbar = () => {
                   <div style={{ padding: "6px 0" }}>
                     {[
                       { to: "/dashboard", label: "Dashboard", icon: "⊞" },
+                      { to: "/settings", label: "Settings", icon: "⚙️" },
                       { to: "/my-courses", label: "My Courses", icon: "📚" },
                       { to: "/payment-history", label: "Payments", icon: "💳" },
                     ].map((item) => (
