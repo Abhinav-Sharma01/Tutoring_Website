@@ -56,8 +56,25 @@ export const deleteUser = async (req, res) => {
     if (user.role === "admin") {
       return res.status(403).json({ message: "Cannot delete admin users" });
     }
+
+    // Cascade deletion based on role
+    if (user.role === "tutor") {
+      // Find all courses created by this tutor
+      const tutorCourses = await Course.find({ tutorId: user._id });
+      const courseIds = tutorCourses.map(c => c._id);
+
+      // Delete all enrollments attached to those specific courses 
+      await Enrollment.deleteMany({ courseId: { $in: courseIds } });
+
+      // Delete the actual courses
+      await Course.deleteMany({ tutorId: user._id });
+    } else if (user.role === "student") {
+      // Delete all of this student's enrollments
+      await Enrollment.deleteMany({ studentId: user._id });
+    }
+
     await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User deleted successfully" });
+    res.json({ message: "User and associated data deleted successfully" });
   } catch (error) {
     console.error("Admin delete user error:", error.message);
     res.status(500).json({ message: "Failed to delete user" });
