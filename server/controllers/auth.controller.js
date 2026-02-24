@@ -13,7 +13,7 @@ const registerUser = async (req, res) => {
         const { username, email, password, about, role } = req.body;
 
         if ([username, email, password].some((field) => !field || field.trim() === "")) {
-            return res.status(400).json({ message: "All fields are must required..." });
+            return res.status(400).json({ message: "Looks like you missed a few fields. Please fill them all in." });
         }
 
         const userRole = (role === "tutor") ? "tutor" : "student";
@@ -22,7 +22,7 @@ const registerUser = async (req, res) => {
             $or: [{ email }, { username }]
         })
         if (userExists) {
-            return res.status(400).json({ message: "Email or username already exists..." });
+            return res.status(400).json({ message: "That email or username is already taken. Try another one!" });
         }
 
         const hashpassword = await bcrypt.hash(password, 10);
@@ -63,13 +63,13 @@ const registerUser = async (req, res) => {
 
         await Notification.create({
             recipient: user._id,
-            title: "Welcome to TutorPro!",
-            message: "We're glad to have you on board. You can customize your profile picture and bio in the Settings menu.",
+            title: "Welcome to TutorPro! 🎉",
+            message: "Hey there, so glad you joined! Head over to Settings to drop in a profile picture and tell us a bit about yourself.",
             type: "success"
         });
 
         res.status(201).json({
-            message: "User registered successfully",
+            message: "You're successfully signed up!",
             AccessToken,
             user: {
                 id: user._id,
@@ -85,7 +85,7 @@ const registerUser = async (req, res) => {
 
     } catch (error) {
         console.error("Registration error:", error.message);
-        return res.status(500).json({ message: "Internal server error while registering the user..." });
+        return res.status(500).json({ message: "Oops, something went wrong on our end while signing you up." });
     }
 }
 
@@ -99,7 +99,7 @@ const loginUser = async (req, res) => {
         }
 
         if (!email && !username) {
-            return res.status(401).json({ message: "Username or Email is required..." });
+            return res.status(400).json({ message: "Please provide your email or username to log in." });
         }
 
         let loginEmail;
@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
         })
 
         if (!userExists) {
-            return res.status(404).json({ message: "User didn't exists" })
+            return res.status(404).json({ message: "We couldn't find an account with those details." })
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, userExists.password);
@@ -147,7 +147,7 @@ const loginUser = async (req, res) => {
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
 
         res.status(200).json({
-            message: "User successfully logged-In..",
+            message: "Welcome back!",
             AccessToken,
             user: {
                 id: userExists._id,
@@ -294,7 +294,7 @@ const forgotPassword = async (req, res) => {
 
         await sendOtpEmail(user.email, otp);
 
-        res.status(200).json({ message: "OTP sent to your email" });
+        res.status(200).json({ message: "we sent a reset code to your email!" });
     } catch (error) {
         console.error("Forgot password error:", error.message);
         res.status(500).json({ message: "Failed to send OTP. Check your email configuration." });
@@ -352,8 +352,8 @@ const resetPassword = async (req, res) => {
 
         await Notification.create({
             recipient: user._id,
-            title: "Security Alert",
-            message: "Your password was recently changed. If this was not you, please contact support immediately.",
+            title: "Security Alert: Password Changed",
+            message: "Just a heads up—your password was just changed. If that wasn't you, please reach out to us right away.",
             type: "warning"
         });
 
@@ -381,10 +381,10 @@ export const updateProfile = async (req, res) => {
 
             if (existingUser) {
                 if (existingUser.username.toLowerCase() === username?.toLowerCase()) {
-                    return res.status(400).json({ message: "Username is already taken." });
+                    return res.status(400).json({ message: "Looks like someone already grabbed that username." });
                 }
                 if (existingUser.email === email?.toLowerCase()) {
-                    return res.status(400).json({ message: "Email is already taken." });
+                    return res.status(400).json({ message: "That email is already tied to an account." });
                 }
             }
         }
@@ -402,6 +402,13 @@ export const updateProfile = async (req, res) => {
         ).select("-password -refreshToken");
 
         if (!updatedUser) return res.status(404).json({ message: "User not found." });
+
+        await Notification.create({
+            recipient: updatedUser._id,
+            title: "Profile Updated ✨",
+            message: "Looking good! Your profile changes have been saved.",
+            type: "success"
+        });
 
         res.json({
             message: "Profile updated successfully",

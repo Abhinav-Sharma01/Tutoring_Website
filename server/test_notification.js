@@ -1,4 +1,6 @@
-import "dotenv/config";
+// Hardcoded connection to bypass module dotenv loading issues in isolated scripts
+const MONGO_URI = "mongodb+srv://user1:Abhi*123@cluster0.ftnrcss.mongodb.net/abhi";
+
 import mongoose from "mongoose";
 import { Notification } from "./models/Notification.model.js";
 
@@ -7,7 +9,7 @@ const TEST_USER_ID = "67b9d5c3672d93e50b73b22e"; // Assuming this is Admin Abhin
 
 async function run() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(MONGO_URI);
         console.log("Connected to MongoDB");
 
         // We don't know the exact current user ID without checking the DB, 
