@@ -1,5 +1,6 @@
 import { Enrollment } from "../models/Enrollment.model.js";
 import { Course } from "../models/Course.model.js";
+import { User } from "../models/User.model.js";
 
 const enrollCourse = async (req, res) => {
   try {
@@ -54,6 +55,53 @@ const getMyEnrollments = async (req, res) => {
     });
   } catch (error) {
     console.error("Get enrollments error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const adminEnrollStudent = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Only admins can perform this action" });
+    }
+
+    const { courseId, email } = req.body;
+
+    if (!courseId || !email) {
+      return res.status(400).json({ message: "Course ID and Student Email are required" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const targetUser = await User.findOne({ email });
+    if (!targetUser) {
+      return res.status(404).json({ message: "No user found with that email address" });
+    }
+
+    const studentId = targetUser._id;
+
+    // Prevent duplicate enrollment
+    const exists = await Enrollment.findOne({ studentId, courseId });
+    if (exists) {
+      return res.status(400).json({ message: "Student is already enrolled in this course" });
+    }
+
+    const enrollment = await Enrollment.create({
+      studentId,
+      courseId,
+      status: "active",
+      paymentStatus: "success", // Marked success for instructor dashboard earnings
+    });
+
+    return res.status(201).json({
+      message: "Student successfully enrolled by Admin",
+      enrollment,
+    });
+  } catch (error) {
+    console.error("Admin enrollment error:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -139,6 +187,7 @@ const getEnrollmentStats = async (req, res) => {
 export {
   enrollCourse,
   getMyEnrollments,
+  adminEnrollStudent,
   checkEnrollment,
   completeCourse,
   getEnrollmentStats

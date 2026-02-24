@@ -161,6 +161,58 @@ const InstructorDashboard = () => {
           )}
         </div>
 
+        {/* Recent Enrollments Table */}
+        {stats.recentEnrollments && stats.recentEnrollments.length > 0 && (
+          <div style={{ marginBottom: 40, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "300ms", opacity: 0, animationFillMode: "forwards" }}>
+            <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px" }}>Recent Enrollments</h3>
+            <div className="tp-stat-card" style={{ padding: 0 }}>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                  <thead>
+                    <tr style={{ background: "rgba(0,212,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                      <th style={{ padding: "16px 24px", color: muted, fontWeight: 600, fontSize: "0.85rem" }}>Student</th>
+                      <th style={{ padding: "16px 24px", color: muted, fontWeight: 600, fontSize: "0.85rem" }}>Course</th>
+                      <th style={{ padding: "16px 24px", color: muted, fontWeight: 600, fontSize: "0.85rem" }}>Date</th>
+                      <th style={{ padding: "16px 24px", color: muted, fontWeight: 600, fontSize: "0.85rem", textAlign: "right" }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.recentEnrollments.map((enr, i) => (
+                      <tr key={enr._id || i} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        <td style={{ padding: "16px 24px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #a78bfa)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontSize: "0.75rem", fontWeight: 800, flexShrink: 0 }}>
+                              {enr.studentId?.username?.charAt(0)?.toUpperCase() || "?"}
+                            </div>
+                            <div>
+                              <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: "0.9rem" }}>{enr.studentId?.username || "Unknown"}</p>
+                              <p style={{ margin: 0, color: muted, fontSize: "0.75rem" }}>{enr.studentId?.email || "-"}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ padding: "16px 24px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            {enr.courseId?.thumbnail && (
+                              <img src={enr.courseId.thumbnail} alt="" style={{ width: 40, height: 28, borderRadius: 4, objectFit: "cover" }} />
+                            )}
+                            <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>{enr.courseId?.title || "Unknown Course"}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: "16px 24px", color: muted, fontSize: "0.85rem" }}>
+                          {new Date(enr.enrolledAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </td>
+                        <td style={{ padding: "16px 24px", fontWeight: 700, fontSize: "0.95rem", textAlign: "right", color: "#34d399" }}>
+                          ₹{enr.courseId?.price || 0}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px" }}>Quick Actions</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {[

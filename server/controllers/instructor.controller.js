@@ -12,18 +12,22 @@ export const getInstructorStats = async (req, res) => {
     const enrollments = await Enrollment.find({
       courseId: { $in: courseIds },
       paymentStatus: "success",
-    }).populate("courseId");
+    })
+      .populate("courseId", "title price thumbnail")
+      .populate("studentId", "username email avatar_url")
+      .sort({ enrolledAt: -1 });
 
     const totalStudents = enrollments.length;
 
     const totalEarnings = enrollments.reduce((sum, e) => {
-      return sum + (e.courseId.price || 0);
+      return sum + (e.courseId?.price || 0);
     }, 0);
 
     res.json({
       totalCourses: courses.length,
       totalStudents,
       totalEarnings,
+      recentEnrollments: enrollments.slice(0, 50), // Send the most recent 50
     });
   } catch (err) {
     console.error(err);

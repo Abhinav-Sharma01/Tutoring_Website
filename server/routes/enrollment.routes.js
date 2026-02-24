@@ -6,13 +6,17 @@ import {
     getMyEnrollments,
     checkEnrollment,
     completeCourse,
-    getEnrollmentStats
+    getEnrollmentStats,
+    adminEnrollStudent
 } from "../controllers/enrollment.controller.js";
 
 const router = express.Router();
 
 // Enroll in a course
 router.post("/enroll", protect, enrollCourse);
+
+// Admin bypass enrollment
+router.post("/admin-enroll", protect, adminEnrollStudent);
 
 // Get student's enrolled courses
 router.get("/my-enrollments", protect, getMyEnrollments);

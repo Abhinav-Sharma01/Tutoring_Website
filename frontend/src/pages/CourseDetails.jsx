@@ -19,6 +19,9 @@ const CourseDetails = () => {
   const [newLessonDuration, setNewLessonDuration] = useState("");
   const [newLessonVideo, setNewLessonVideo] = useState(null);
   const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [showAdminEnroll, setShowAdminEnroll] = useState(false);
+  const [adminEnrollEmail, setAdminEnrollEmail] = useState("");
+  const [enrollingStudent, setEnrollingStudent] = useState(false);
 
   // Rename states
   const [isEditingCourse, setIsEditingCourse] = useState(false);
@@ -51,6 +54,22 @@ const CourseDetails = () => {
     };
     fetchData();
   }, [id, user]);
+
+  const handleAdminEnroll = async (e) => {
+    e.preventDefault();
+    if (!adminEnrollEmail) return;
+    setEnrollingStudent(true);
+    try {
+      await api.post("/enrollments/admin-enroll", { courseId: id, email: adminEnrollEmail });
+      toast.success(`Successfully enrolled ${adminEnrollEmail}`);
+      setShowAdminEnroll(false);
+      setAdminEnrollEmail("");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to enroll student");
+    } finally {
+      setEnrollingStudent(false);
+    }
+  };
 
   const handlePayment = async () => {
     if (!user) { toast.error("Please log in to enroll"); navigate("/login"); return; }
@@ -529,7 +548,28 @@ const CourseDetails = () => {
 
             {/* Delete Entire Course Button (Only for Admins/Tutors) */}
             {canEdit && (
-              <div style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: 12 }}>
+                {user?.role === "admin" && (
+                  <button
+                    onClick={() => setShowAdminEnroll(true)}
+                    style={{
+                      width: "100%", padding: "14px", borderRadius: 12,
+                      background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.3)",
+                      color: "#a78bfa", fontWeight: 700, fontSize: "0.95rem",
+                      cursor: "pointer", transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = "rgba(167,139,250,0.2)";
+                      e.currentTarget.style.border = "1px solid rgba(167,139,250,0.5)";
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = "rgba(167,139,250,0.1)";
+                      e.currentTarget.style.border = "1px solid rgba(167,139,250,0.3)";
+                    }}
+                  >
+                    Admin: Free Enroll
+                  </button>
+                )}
                 <button
                   onClick={handleDeleteCourse}
                   style={{
@@ -587,6 +627,31 @@ const CourseDetails = () => {
                   {uploadingVideo ? (
                     <><span style={{ width: 16, height: 16, border: "2px solid rgba(0,24,32,0.3)", borderTopColor: "#001820", borderRadius: "50%", animation: "tp-spin 0.6s linear infinite" }} /> Uploading Video...</>
                   ) : "Upload & Save Lesson"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Admin Manual Enroll Modal */}
+      {
+        user?.role === "admin" && showAdminEnroll && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+            <div style={{ position: "absolute", inset: 0, background: "rgba(0,4,10,0.85)", backdropFilter: "blur(8px)", animation: "tp-fade-up 0.3s ease", zIndex: -1 }} onClick={() => setShowAdminEnroll(false)} />
+            <div style={{ background: "rgba(6,14,24,0.95)", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 24, padding: "36px 32px", width: "100%", maxWidth: 400, position: "relative", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(167,139,250,0.1)", animation: "tp-fade-up 0.4s ease forwards" }}>
+              <button onClick={() => setShowAdminEnroll(false)} style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: muted, fontSize: "1.5rem", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = muted}>×</button>
+              <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.8rem", margin: "0 0 8px", color: text }}>Free Enrollment</h3>
+              <p style={{ color: muted, fontSize: "0.85rem", margin: "0 0 24px", lineHeight: 1.5 }}>Manually enroll a student bypassing payment. This will grant them full access and log the course price to the tutor's total earnings.</p>
+              <form onSubmit={handleAdminEnroll} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>Student Email *</label>
+                  <input type="email" autoFocus required value={adminEnrollEmail} onChange={e => setAdminEnrollEmail(e.target.value)} placeholder="e.g. student@example.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#a78bfa"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+                </div>
+                <button disabled={enrollingStudent} type="submit" style={{ width: "100%", padding: "14px", borderRadius: 12, background: `linear-gradient(135deg, #a78bfa, #8b5cf6)`, border: "none", color: "#fff", fontWeight: 800, fontSize: "1rem", cursor: enrollingStudent ? "not-allowed" : "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, opacity: enrollingStudent ? 0.7 : 1 }}>
+                  {enrollingStudent ? (
+                    <><span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "tp-spin 0.6s linear infinite" }} /> Enrolling...</>
+                  ) : "Grant Course Access"}
                 </button>
               </form>
             </div>
