@@ -14,6 +14,7 @@ import certificateRoutes from "./routes/certificate.routes.js";
 import paymentHistoryRoutes from "./routes/paymentHistory.routes.js";
 import instructorRoutes from "./routes/instructor.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
 
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/certificate", certificateRoutes);
 app.use("/api/payment-history", paymentHistoryRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

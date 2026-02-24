@@ -7,15 +7,49 @@ const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const profileRef = useRef(null);
+  const notifRef = useRef(null);
 
   const logout = async () => { try { await api.post("/auth/logout"); } finally { setUser(null); setProfileOpen(false); } };
 
   useEffect(() => { const fn = () => setScrolled(window.scrollY > 8); window.addEventListener("scroll", fn, { passive: true }); return () => window.removeEventListener("scroll", fn); }, []);
-  useEffect(() => { setMenuOpen(false); setProfileOpen(false); }, [location.pathname]);
-  useEffect(() => { const fn = (e) => { if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false); }; document.addEventListener("mousedown", fn); return () => document.removeEventListener("mousedown", fn); }, []);
+  useEffect(() => { setMenuOpen(false); setProfileOpen(false); setNotificationsOpen(false); }, [location.pathname]);
+  useEffect(() => { const fn = (e) => { if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false); if (notifRef.current && !notifRef.current.contains(e.target)) setNotificationsOpen(false); }; document.addEventListener("mousedown", fn); return () => document.removeEventListener("mousedown", fn); }, []);
+
+  const fetchNotifications = async () => {
+    if (!user) return;
+    try {
+      const res = await api.get("/notifications");
+      setNotifications(res.data.notifications || []);
+    } catch (e) { console.error("Failed to load notifications"); }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 60000); // Polling every minute
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleDismiss = async (e, id) => {
+    e.stopPropagation();
+    try {
+      await api.delete(`/notifications/${id}`);
+      setNotifications(prev => prev.filter(n => n._id !== id));
+    } catch (e) { console.error("Dismiss failed"); }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      await api.delete("/notifications/clear-all");
+      setNotifications([]);
+    } catch (e) { console.error("Clear all failed"); }
+  };
+
+  const activeNotifications = notifications.length;
 
   const isActive = (p) => location.pathname === p;
   const accent = "#00d4ff";
@@ -97,14 +131,55 @@ const Navbar = () => {
 
         {/* Right side */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }} className="tp-nav-right">
+          {/* Notifications */}
           {user && (
-            <button style={{ position: "relative", width: 38, height: 38, borderRadius: 10, background: "transparent", border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: muted, transition: "all 0.25s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `rgba(0,212,255,0.2)`; e.currentTarget.style.color = accent; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = muted; }}
-            >
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-              <span style={{ position: "absolute", top: 7, right: 7, width: 7, height: 7, borderRadius: "50%", background: "#f87171", border: `2px solid ${bg}` }} />
-            </button>
+            <div ref={notifRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                style={{ position: "relative", width: 38, height: 38, borderRadius: 10, background: notificationsOpen ? "rgba(0,212,255,0.08)" : "transparent", border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: notificationsOpen ? accent : muted, transition: "all 0.25s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `rgba(0,212,255,0.2)`; e.currentTarget.style.color = accent; }}
+                onMouseLeave={e => { if (!notificationsOpen) { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = muted; } }}
+              >
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                {activeNotifications > 0 && <span style={{ position: "absolute", top: 6, right: 6, width: 8, height: 8, borderRadius: "50%", background: "#f87171", border: `2px solid ${bg}`, boxShadow: "0 0 8px rgba(248,113,113,0.6)" }} />}
+              </button>
+
+              {notificationsOpen && (
+                <div style={{ position: "absolute", right: 0, marginTop: 10, width: 340, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                    <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2f5f5", fontFamily: "'Cabinet Grotesk', sans-serif" }}>Notifications</h3>
+                    {activeNotifications > 0 && (
+                      <button onClick={handleClearAll} style={{ background: "none", border: "none", color: accent, fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", padding: "4px 8px", borderRadius: 100, transition: "background 0.2s" }} onMouseEnter={e => e.target.style.background = "rgba(0,212,255,0.1)"} onMouseLeave={e => e.target.style.background = "transparent"}>Clear all alerts</button>
+                    )}
+                  </div>
+
+                  <div style={{ maxHeight: 380, overflowY: "auto" }}>
+                    {notifications.length === 0 ? (
+                      <div style={{ padding: "40px 20px", textAlign: "center", color: muted, fontSize: "0.85rem" }}>
+                        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1" style={{ margin: "0 auto 10px", opacity: 0.5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                        You're all caught up!
+                      </div>
+                    ) : (
+                      notifications.map((n) => (
+                        <div key={n._id} onClick={(e) => handleDismiss(e, n._id)} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 12, cursor: "pointer", background: "rgba(0,212,255,0.03)", transition: "background 0.2s" }} onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,212,255,0.06)")} onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,212,255,0.03)")}>
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: accent, marginTop: 6, flexShrink: 0 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+                              <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "#e2f5f5" }}>{n.title}</div>
+                              <button onClick={(e) => handleDismiss(e, n._id)} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.2)", cursor: "pointer", padding: 2, display: "flex" }} onMouseEnter={e => e.currentTarget.style.color = "#f87171"} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.2)"}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                              </button>
+                            </div>
+                            <div style={{ fontSize: "0.8rem", color: muted, lineHeight: 1.4 }}>{n.message}</div>
+                            <div style={{ fontSize: "0.7rem", color: "rgba(107,143,160,0.5)", marginTop: 6 }}>{new Date(n.createdAt).toLocaleDateString()}</div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
           {user ? (

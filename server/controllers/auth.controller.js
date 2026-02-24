@@ -1,4 +1,5 @@
 import { User } from "../models/User.model.js";
+import { Notification } from "../models/Notification.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -59,6 +60,13 @@ const registerUser = async (req, res) => {
         };
         res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
+
+        await Notification.create({
+            recipient: user._id,
+            title: "Welcome to TutorPro!",
+            message: "We're glad to have you on board. You can customize your profile picture and bio in the Settings menu.",
+            type: "success"
+        });
 
         res.status(201).json({
             message: "User registered successfully",
@@ -341,6 +349,13 @@ const resetPassword = async (req, res) => {
         user.resetOtp = null;
         user.resetOtpExpiry = null;
         await user.save();
+
+        await Notification.create({
+            recipient: user._id,
+            title: "Security Alert",
+            message: "Your password was recently changed. If this was not you, please contact support immediately.",
+            type: "warning"
+        });
 
         res.status(200).json({ message: "Password reset successful" });
     } catch (error) {
