@@ -113,7 +113,11 @@ const Navbar = () => {
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
-                <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.8rem", boxShadow: "0 2px 12px rgba(0,212,255,0.3)" }}>{initial}</div>
+                {user.avatar_url ? (
+                  <img src={user.avatar_url} alt="Avatar" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", boxShadow: "0 2px 12px rgba(0,212,255,0.3)" }} />
+                ) : (
+                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.8rem", boxShadow: "0 2px 12px rgba(0,212,255,0.3)" }}>{initial}</div>
+                )}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={muted} strokeWidth="2.5" style={{ transition: "transform 0.2s", transform: profileOpen ? "rotate(180deg)" : "rotate(0)" }}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
 
@@ -122,7 +126,11 @@ const Navbar = () => {
                   {/* User info */}
                   <div style={{ padding: "16px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ width: 42, height: 42, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 4px 16px rgba(0,212,255,0.3)" }}>{initial}</div>
+                      {user.avatar_url ? (
+                        <img src={user.avatar_url} alt="Avatar" style={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover", boxShadow: "0 4px 16px rgba(0,212,255,0.3)" }} />
+                      ) : (
+                        <div style={{ width: 42, height: 42, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 4px 16px rgba(0,212,255,0.3)" }}>{initial}</div>
+                      )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#e2f5f5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user.username}</div>
                         <div style={{ fontSize: "0.78rem", color: muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user.email}</div>
@@ -197,7 +205,11 @@ const Navbar = () => {
             {user ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.75rem" }}>{initial}</div>
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt="Avatar" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#001820", fontWeight: 800, fontSize: "0.75rem" }}>{initial}</div>
+                  )}
                   <span style={{ fontWeight: 700, color: "#e2f5f5", fontSize: "0.9rem" }}>{user.username}</span>
                 </div>
                 <button onClick={logout} style={{ padding: "6px 16px", borderRadius: 8, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", fontSize: "0.82rem", fontWeight: 600, cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif" }}>Log out</button>
