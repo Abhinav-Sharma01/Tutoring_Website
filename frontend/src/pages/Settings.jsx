@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
 import api from "../api/axios";
 import toast from "react-hot-toast";
@@ -6,6 +7,7 @@ import toast from "react-hot-toast";
 const Settings = () => {
     const { user, setUser } = useContext(AuthContext);
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         username: "",
@@ -66,14 +68,14 @@ const Settings = () => {
         const toastId = toast.loading("Uploading Avatar securely to Cloudinary...");
 
         const uploadData = new FormData();
-        uploadData.append("video", file); // We use the existing middleware which accepts the field 'video', but since Cloudinary accepts images too, we reuse the route.
+        uploadData.append("avatar", file);
 
         try {
-            const res = await api.post("/upload/video", uploadData, {
+            const res = await api.post("/upload/avatar", uploadData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
 
-            const newAvatarUrl = res.data.videoUrl; // Actually an image URL
+            const newAvatarUrl = res.data.avatar_url;
             setFormData(prev => ({ ...prev, avatar_url: newAvatarUrl }));
 
             toast.success("Avatar uploaded! Click 'Save Changes' to apply.", { id: toastId });
@@ -100,6 +102,7 @@ const Settings = () => {
             // Backend returns the updated user inside res.data.user
             setUser(res.data.user);
             toast.success("Profile updated successfully!", { id: toastId });
+            setTimeout(() => navigate("/dashboard"), 800);
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to save changes", { id: toastId });
         } finally {
