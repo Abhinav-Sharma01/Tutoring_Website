@@ -60,6 +60,10 @@ const Dashboard = () => {
   const weeklyData = [30, 65, 45, 80, 55, 90, 70];
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+  const currentStreak = user?.currentStreak || 1;
+  const nextBadgeGoal = currentStreak === 0 ? 10 : Math.ceil((currentStreak + 0.1) / 10) * 10;
+  const streakProgressPct = (currentStreak / nextBadgeGoal) * 100;
+
   return (
     <div className="tp-dash tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 32px 80px" }}>
@@ -101,12 +105,12 @@ const Dashboard = () => {
           {/* Learning Streak */}
           <div className="tp-stat-card" style={{ background: `linear-gradient(135deg, rgba(0,212,255,0.08), rgba(167,139,250,0.05))`, border: "1px solid rgba(0,212,255,0.12)" }}>
             <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>🔥</div>
-            <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.5rem", margin: "0 0 8px" }}>7-Day Streak!</h3>
+            <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.5rem", margin: "0 0 8px" }}>{currentStreak}-Day Streak!</h3>
             <p style={{ color: muted, fontSize: "0.9rem", margin: "0 0 20px", lineHeight: 1.6 }}>You're on fire! Keep it going to unlock exclusive badges.</p>
             <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 100, overflow: "hidden" }}>
-              <div style={{ height: "100%", borderRadius: 100, background: `linear-gradient(90deg, ${accent}, #a78bfa)`, width: "70%", transition: "width 1s ease" }} />
+              <div style={{ height: "100%", borderRadius: 100, background: `linear-gradient(90deg, ${accent}, #a78bfa)`, width: `${streakProgressPct}%`, transition: "width 1s ease" }} />
             </div>
-            <p style={{ fontSize: "0.78rem", color: muted, marginTop: 8 }}>7 of 10 days toward your next badge</p>
+            <p style={{ fontSize: "0.78rem", color: muted, marginTop: 8 }}>{currentStreak} of {nextBadgeGoal} days toward your next badge</p>
           </div>
         </div>
 

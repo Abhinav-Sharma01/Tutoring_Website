@@ -48,6 +48,14 @@ const UserSchema = new mongoose.Schema({
     resetOtpExpiry: {
         type: Date,
         default: null
+    },
+    lastLoginDate: {
+        type: Date,
+        default: null
+    },
+    currentStreak: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true })
 

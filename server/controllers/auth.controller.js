@@ -7,6 +7,33 @@ import { sendOtpEmail, sendContactEmail } from "../utils/email.js";
 import { OAuth2Client } from "google-auth-library";
 import { deleteFromCloudinary } from "../utils/cloudinary.js";
 
+const updateStreakInfo = (userObj) => {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    let updated = false;
+
+    if (!userObj.lastLoginDate) {
+        userObj.currentStreak = 1;
+        userObj.lastLoginDate = today;
+        updated = true;
+    } else {
+        const lastLogin = new Date(userObj.lastLoginDate);
+        lastLogin.setUTCHours(0, 0, 0, 0);
+        const diffDays = Math.round((today - lastLogin) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+            userObj.currentStreak = (userObj.currentStreak || 0) + 1;
+            userObj.lastLoginDate = today;
+            updated = true;
+        } else if (diffDays > 1) {
+            userObj.currentStreak = 1;
+            userObj.lastLoginDate = today;
+            updated = true;
+        }
+    }
+    return updated;
+};
+
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const registerUser = async (req, res) => {
@@ -36,6 +63,8 @@ const registerUser = async (req, res) => {
             status: "active",
             avatar_url: "",
             role: userRole,
+            currentStreak: 1,
+            lastLoginDate: new Date()
         });
 
         const RefreshToken = jwt.sign(
@@ -80,6 +109,7 @@ const registerUser = async (req, res) => {
                 status: user.status,
                 about: user.about,
                 avatar_url: user.avatar_url,
+                currentStreak: user.currentStreak
             }
         })
 
@@ -139,6 +169,7 @@ const loginUser = async (req, res) => {
         )
 
         userExists.refreshToken = RefreshToken;
+        updateStreakInfo(userExists);
         await userExists.save();
 
 
@@ -157,7 +188,8 @@ const loginUser = async (req, res) => {
                 status: userExists.status,
                 about: userExists.about,
                 role: userExists.role,
-                avatar_url: userExists.avatar_url
+                avatar_url: userExists.avatar_url,
+                currentStreak: userExists.currentStreak
             }
         });
 
@@ -174,6 +206,10 @@ const getCurrentUser = async (req, res) => {
         const userId = req.user.id;
         const currUserData = await User.findById(userId).select("-password -refreshToken");
 
+        if (updateStreakInfo(currUserData)) {
+            await currUserData.save();
+        }
+
         res.status(200).json({
             message: "Here are the current user details..",
             user: {
@@ -183,7 +219,8 @@ const getCurrentUser = async (req, res) => {
                 status: currUserData.status,
                 role: currUserData.role,
                 avatar_url: currUserData.avatar_url,
-                about: currUserData.about
+                about: currUserData.about,
+                currentStreak: currUserData.currentStreak
             }
         })
 
@@ -252,6 +289,7 @@ const googleAuth = async (req, res) => {
 
         user.refreshToken = RefreshToken;
         if (picture && !user.avatar_url) user.avatar_url = picture;
+        updateStreakInfo(user);
         await user.save();
 
         const isProduction = process.env.NODE_ENV === "production";
@@ -270,6 +308,7 @@ const googleAuth = async (req, res) => {
                 status: user.status,
                 about: user.about,
                 avatar_url: user.avatar_url,
+                currentStreak: user.currentStreak
             },
         });
     } catch (error) {
