@@ -415,6 +415,5 @@ export {
     googleAuth,
     forgotPassword,
     resetPassword,
-    submitContactForm,
-    updateProfile
+    submitContactForm
 }
