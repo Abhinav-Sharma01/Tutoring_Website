@@ -20,6 +20,12 @@ const CourseDetails = () => {
   const [newLessonVideo, setNewLessonVideo] = useState(null);
   const [uploadingVideo, setUploadingVideo] = useState(false);
 
+  // Rename states
+  const [isEditingCourse, setIsEditingCourse] = useState(false);
+  const [editCourseTitle, setEditCourseTitle] = useState("");
+  const [editingLessonIndex, setEditingLessonIndex] = useState(null);
+  const [editLessonTitle, setEditLessonTitle] = useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,6 +40,7 @@ const CourseDetails = () => {
         }
         const [courseRes, reviewsRes, checkRes] = await Promise.all(promises);
         setCourse(courseRes.data.course || courseRes.data);
+        setEditCourseTitle((courseRes.data.course || courseRes.data).title);
         setReviews(reviewsRes.data.reviews || []);
         if (checkRes) setIsEnrolled(checkRes.data.enrolled);
       } catch (err) {
@@ -139,6 +146,35 @@ const CourseDetails = () => {
     }
   };
 
+  const handleRenameCourse = async () => {
+    if (!editCourseTitle.trim()) return toast.error("Course title cannot be empty");
+    try {
+      const res = await api.put(`/courses/${id}`, { title: editCourseTitle });
+      setCourse(res.data.course);
+      setIsEditingCourse(false);
+      toast.success("Course renamed! Enrolled students will be notified.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to rename course");
+    }
+  };
+
+  const handleRenameLesson = async (index) => {
+    if (!editLessonTitle.trim()) return toast.error("Lesson title cannot be empty");
+    try {
+      const updatedLessons = [...course.lessons];
+      updatedLessons[index].title = editLessonTitle;
+
+      const res = await api.put(`/courses/${id}`, { lessons: updatedLessons });
+      setCourse(res.data.course);
+      setEditingLessonIndex(null);
+      toast.success("Lesson renamed! Enrolled students will be notified.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to rename lesson");
+    }
+  };
+
   useEffect(() => {
     const s = document.createElement("style");
     s.textContent = `@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;600;700;800;900&display=swap');
@@ -225,7 +261,32 @@ const CourseDetails = () => {
               </span>
             )}
           </div>
-          <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 3.2rem)", margin: "0 0 16px", lineHeight: 1.1 }}>{course.title}</h1>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+            {isEditingCourse ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
+                <input
+                  type="text"
+                  value={editCourseTitle}
+                  onChange={e => setEditCourseTitle(e.target.value)}
+                  autoFocus
+                  style={{ flex: 1, maxWidth: 600, padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.3)", border: `1px solid ${accent}`, color: text, fontSize: "1.5rem", fontFamily: "'Instrument Serif', serif" }}
+                />
+                <button onClick={handleRenameCourse} style={{ padding: "8px 16px", borderRadius: 8, background: accent, border: "none", color: "#001820", fontWeight: 700, cursor: "pointer" }}>Save</button>
+                <button onClick={() => { setIsEditingCourse(false); setEditCourseTitle(course.title); }} style={{ padding: "8px 16px", borderRadius: 8, background: "rgba(255,255,255,0.1)", border: "none", color: text, fontWeight: 700, cursor: "pointer" }}>Cancel</button>
+              </div>
+            ) : (
+              <>
+                <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 3.2rem)", margin: 0, lineHeight: 1.1 }}>{course.title}</h1>
+                {canEdit && (
+                  <button onClick={() => setIsEditingCourse(true)} style={{ background: "rgba(0,212,255,0.1)", border: "1px dashed rgba(0,212,255,0.4)", borderRadius: "50%", width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", color: accent, cursor: "pointer", transition: "all 0.2s" }} title="Edit Course Title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+
           <p style={{ color: "#8ab0bf", fontSize: "1.05rem", maxWidth: 700, lineHeight: 1.7, margin: "0 0 24px" }}>{course.description}</p>
           {tutor && (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -260,7 +321,7 @@ const CourseDetails = () => {
             </div>
 
             {/* Lessons & Video Player */}
-            {course.lessons && course.lessons.length > 0 && (
+            {course.lessons && (course.lessons.length > 0 || canEdit) && (
               <div className="tp-card" style={{ padding: 0, marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "100ms", opacity: 0, animationFillMode: "forwards", overflow: "hidden" }}>
 
                 {/* Video Player */}
@@ -294,18 +355,50 @@ const CourseDetails = () => {
                       paddingLeft: activeLesson === i && isEnrolled ? "17px" : "20px"
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1 }}>
                       <div style={{ width: 32, height: 32, borderRadius: 10, background: activeLesson === i && isEnrolled ? `linear-gradient(135deg, ${accent}, #0094ff)` : "rgba(0,212,255,0.08)", border: activeLesson === i && isEnrolled ? "none" : "1px solid rgba(0,212,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: activeLesson === i && isEnrolled ? "#001820" : accent, fontSize: "0.78rem", fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
-                      <div>
-                        <span style={{ fontWeight: (activeLesson === i && isEnrolled) ? 800 : 700, color: (activeLesson === i && isEnrolled) ? "#fff" : text, fontSize: "0.9rem", display: "block", transition: "all 0.2s" }}>{lesson.title}</span>
-                        {lesson.duration && <span style={{ fontSize: "0.76rem", color: (activeLesson === i && isEnrolled) ? "#a2c1d1" : muted }}>{lesson.duration}</span>}
-                      </div>
+
+                      {editingLessonIndex === i ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }} onClick={e => e.stopPropagation()}>
+                          <input
+                            type="text"
+                            value={editLessonTitle}
+                            onChange={e => setEditLessonTitle(e.target.value)}
+                            autoFocus
+                            style={{ flex: 1, padding: "6px 10px", borderRadius: 6, background: "rgba(0,0,0,0.4)", border: `1px solid ${accent}`, color: text, fontSize: "0.9rem" }}
+                          />
+                          <button onClick={(e) => { e.stopPropagation(); handleRenameLesson(i); }} style={{ padding: "4px 10px", borderRadius: 6, background: accent, border: "none", color: "#001820", fontWeight: 700, cursor: "pointer", fontSize: "0.8rem" }}>Save</button>
+                          <button onClick={(e) => { e.stopPropagation(); setEditingLessonIndex(null); }} style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(255,255,255,0.1)", border: "none", color: text, fontWeight: 700, cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
+                        </div>
+                      ) : (
+                        <div>
+                          <span style={{ fontWeight: (activeLesson === i && isEnrolled) ? 800 : 700, color: (activeLesson === i && isEnrolled) ? "#fff" : text, fontSize: "0.9rem", display: "block", transition: "all 0.2s" }}>{lesson.title}</span>
+                          {lesson.duration && <span style={{ fontSize: "0.76rem", color: (activeLesson === i && isEnrolled) ? "#a2c1d1" : muted }}>{lesson.duration}</span>}
+                        </div>
+                      )}
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                       {isEnrolled ? (
                         <span style={{ color: activeLesson === i ? accent : muted, fontSize: "0.85rem", fontWeight: activeLesson === i ? 700 : 400 }}>{activeLesson === i ? "▶ Playing" : "▶"}</span>
                       ) : (
                         <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.85rem" }}>🔒</span>
+                      )}
+
+                      {/* Edit Lesson Button (Only for Admins/Tutors) */}
+                      {canEdit && editingLessonIndex !== i && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setEditingLessonIndex(i); setEditLessonTitle(lesson.title); }}
+                          style={{
+                            background: "none", border: "none", padding: "6px",
+                            color: "rgba(0,212,255,0.5)", cursor: "pointer",
+                            transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center"
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color = "#00d4ff"; e.currentTarget.style.transform = "scale(1.1)"; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = "rgba(0,212,255,0.5)"; e.currentTarget.style.transform = "scale(1)"; }}
+                          title="Rename Lesson"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
                       )}
 
                       {/* Delete Lesson Button (Only for Admins/Tutors) */}

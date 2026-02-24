@@ -1,6 +1,8 @@
 import express from "express";
 import { User } from "../models/User.model.js";
 import { Course } from "../models/Course.model.js";
+import { Enrollment } from "../models/Enrollment.model.js";
+import { Notification } from "../models/Notification.model.js";
 import { deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const createCourse = async (req, res) => {
@@ -106,6 +108,13 @@ const updateCourse = async (req, res) => {
             await deleteFromCloudinary(course.thumbnail);
         }
 
+        let courseTitleChanged = false;
+        let lessonTitleChanged = false;
+
+        if (req.body.title && req.body.title !== course.title) {
+            courseTitleChanged = true;
+        }
+
         if (req.body.lessons && Array.isArray(req.body.lessons)) {
             const oldVideoUrls = course.lessons.map(l => l.videoUrl).filter(Boolean);
             const newVideoUrls = req.body.lessons.map(l => l.videoUrl).filter(Boolean);
@@ -113,6 +122,14 @@ const updateCourse = async (req, res) => {
 
             for (const url of videosToDelete) {
                 await deleteFromCloudinary(url);
+            }
+
+            // Check if any existing lesson title changed
+            for (let i = 0; i < Math.min(course.lessons.length, req.body.lessons.length); i++) {
+                if (course.lessons[i].title !== req.body.lessons[i].title) {
+                    lessonTitleChanged = true;
+                    break;
+                }
             }
         }
 
@@ -123,6 +140,48 @@ const updateCourse = async (req, res) => {
         });
 
         await course.save();
+
+        // Async notification logic to avoid blocking response
+        if (courseTitleChanged || lessonTitleChanged) {
+            Promise.resolve().then(async () => {
+                try {
+                    const enrollments = await Enrollment.find({ courseId: course._id });
+                    if (enrollments.length > 0) {
+                        const notifications = [];
+
+                        if (courseTitleChanged) {
+                            for (const enrollment of enrollments) {
+                                notifications.push({
+                                    recipient: enrollment.studentId,
+                                    title: "Course Updated",
+                                    message: `Course name changed: ${course.title}`,
+                                    type: "info"
+                                });
+                            }
+                        }
+
+                        if (lessonTitleChanged) {
+                            for (const enrollment of enrollments) {
+                                notifications.push({
+                                    recipient: enrollment.studentId,
+                                    title: "Lesson Updated",
+                                    message: `Lesson name changed inside: ${course.title}`,
+                                    type: "info"
+                                });
+                            }
+                        }
+
+                        // If one or both changed, we might have duplicate notifications, that's fine or we could deduplicate.
+                        // Inserting all created notifications.
+                        if (notifications.length > 0) {
+                            await Notification.insertMany(notifications);
+                        }
+                    }
+                } catch (notifErr) {
+                    console.error("Error sending update notifications:", notifErr);
+                }
+            });
+        }
 
         res.status(200).json({
             message: "Course updated successfully",
