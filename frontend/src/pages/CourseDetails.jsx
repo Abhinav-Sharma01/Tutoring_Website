@@ -48,8 +48,14 @@ const CourseDetails = () => {
         setReviews(reviewsRes.data.reviews || []);
         if (checkRes) {
           setIsEnrolled(checkRes.data.enrolled);
-          if (checkRes.data.enrollment?.watchedVideos) {
-            setWatchedVideos(checkRes.data.enrollment.watchedVideos);
+          const courseData = courseRes.data.course || courseRes.data;
+          const enrollment = checkRes.data.enrollment;
+          if (enrollment) {
+            if (enrollment.status === "completed" && courseData.lessons) {
+              setWatchedVideos(courseData.lessons.map((_, i) => i));
+            } else if (enrollment.watchedVideos) {
+              setWatchedVideos(enrollment.watchedVideos);
+            }
           }
         }
       } catch (err) {

@@ -124,7 +124,7 @@ const MyCourses = () => {
             {filtered.map((enrollment, i) => {
               const c = enrollment.courseId;
               const isCompleted = enrollment.status === "completed";
-              const progress = enrollment.progress || 0;
+              const progress = isCompleted ? 100 : (enrollment.progress || 0);
               const isStarted = progress > 0 || isCompleted;
               return (
                 <div key={enrollment._id} className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 60}ms`, opacity: 0, animationFillMode: "forwards" }}>

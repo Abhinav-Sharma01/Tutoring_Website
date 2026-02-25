@@ -148,6 +148,14 @@ const completeCourse = async (req, res) => {
     }
 
     enrollment.status = "completed";
+    enrollment.progress = 100;
+
+    // Also mark all lessons as watched so the UI checkmarks sync up if they visit Course Details later
+    const course = await Course.findById(courseId);
+    if (course && course.lessons) {
+      enrollment.watchedVideos = course.lessons.map((_, i) => i);
+    }
+
     await enrollment.save();
 
     res.status(200).json({
