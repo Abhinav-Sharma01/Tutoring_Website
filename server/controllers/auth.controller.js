@@ -146,15 +146,32 @@ const loginUser = async (req, res) => {
             return res.status(404).json({ message: "We couldn't find an account with those details." })
         }
 
+        if (userExists.lockUntil && userExists.lockUntil > Date.now()) {
+            const timeRemaining = Math.ceil((userExists.lockUntil - Date.now()) / 1000);
+            return res.status(429).json({ message: `Account is temporarily locked. Please try again after ${timeRemaining} seconds.` });
+        }
+
         const isPasswordCorrect = await bcrypt.compare(password, userExists.password);
 
         if (!isPasswordCorrect) {
-            return res.status(401).json({ message: "Password is incorrect..." });
+            userExists.loginAttempts = (userExists.loginAttempts || 0) + 1;
+            let errorMessage = "Password is incorrect...";
+
+            if (userExists.loginAttempts >= 3) {
+                userExists.lockUntil = Date.now() + 60 * 1000;
+                errorMessage = "Too many failed attempts. Your account has been locked for 1 minute.";
+            }
+            await userExists.save();
+
+            return res.status(401).json({ message: errorMessage });
         }
 
         if (userExists.status === "disabled") {
             return res.status(403).json({ message: "Your account is disabled..." });
         }
+
+        userExists.loginAttempts = 0;
+        userExists.lockUntil = null;
 
         const AccessToken = jwt.sign(
             { id: userExists._id, role: userExists.role },
