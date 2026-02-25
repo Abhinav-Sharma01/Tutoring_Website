@@ -94,7 +94,7 @@ const registerUser = async (req, res) => {
         await Notification.create({
             recipient: user._id,
             title: "Welcome to TutorPro!",
-            message: "Welcome to TutorPro--a place to learn, grow, and achieve your goals.",
+            message: "Welcome to TutorPro — a place to learn, grow, and achieve your goals.",
             type: "success"
         });
 
