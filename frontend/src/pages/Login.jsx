@@ -109,7 +109,7 @@ const Login = () => {
       const res = await api.post("/auth/login", { email, password });
       setUser(res.data.user);
       toast.success("Welcome back!");
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     } finally { setLoading(false); }

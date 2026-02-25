@@ -117,7 +117,7 @@ const Register = () => {
       const res = await api.post("/auth/register", { username: form.name, email: form.email, password: form.password, role: form.role });
       setUser(res.data.user);
       toast.success("🎉 Account created! Welcome to TutorPro.");
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) { setError(err.response?.data?.message || "Registration failed"); }
     finally { setLoading(false); }
   };

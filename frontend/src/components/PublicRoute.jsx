@@ -13,7 +13,7 @@ const PublicRoute = ({ children }) => {
         );
     }
 
-    if (user) return <Navigate to="/dashboard" replace />;
+    if (user) return <Navigate to="/" replace />;
 
     return children;
 };
