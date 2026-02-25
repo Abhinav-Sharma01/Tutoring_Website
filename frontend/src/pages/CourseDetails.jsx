@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/auth-context";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ const CourseDetails = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [watchedVideos, setWatchedVideos] = useState([]);
   const [activeLesson, setActiveLesson] = useState(0);
+  const videoRef = useRef(null);
   const [reviews, setReviews] = useState([]);
   const [showAddLesson, setShowAddLesson] = useState(false);
   const [newLessonTitle, setNewLessonTitle] = useState("");
@@ -89,6 +90,25 @@ const CourseDetails = () => {
     } catch (err) {
       console.error("Failed to mark video as watched", err);
     }
+  };
+
+  const handleLessonClick = (i) => {
+    if (!isEnrolled) return;
+    if (activeLesson === i) {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play();
+      }
+    } else {
+      setActiveLesson(i);
+    }
+
+    // Auto-scroll to video player
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
   };
 
   const handlePayment = async () => {
@@ -358,6 +378,7 @@ const CourseDetails = () => {
                   <div style={{ background: "#000", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative", paddingTop: "56.25%" }}>
                     <video
                       key={course.lessons[activeLesson].videoUrl}
+                      ref={videoRef}
                       controls
                       autoPlay
                       controlsList="nodownload"
@@ -378,7 +399,7 @@ const CourseDetails = () => {
                   <div
                     key={i}
                     className="tp-lesson-row"
-                    onClick={() => isEnrolled && setActiveLesson(i)}
+                    onClick={() => handleLessonClick(i)}
                     style={{
                       cursor: isEnrolled ? "pointer" : "default",
                       background: activeLesson === i && isEnrolled ? "rgba(0,212,255,0.05)" : "transparent",
