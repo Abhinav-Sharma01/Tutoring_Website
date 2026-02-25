@@ -10,7 +10,6 @@ const Footer = () => {
         <footer style={{ background: "rgba(3,9,18,0.95)", borderTop: "1px solid rgba(255,255,255,0.04)", padding: "40px 32px", fontFamily: "'Cabinet Grotesk', sans-serif" }}>
             <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 32 }}>
 
-                {/* Brand */}
                 <div style={{ flex: "1 1 300px" }}>
                     <Link to="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                         <div style={{ width: 34, height: 34, borderRadius: 10, background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -25,7 +24,6 @@ const Footer = () => {
                     </p>
                 </div>
 
-                {/* Links */}
                 <div style={{ display: "flex", gap: 64, flexWrap: "wrap" }}>
                     <div>
                         <h4 style={{ color: text, fontSize: "1rem", fontWeight: 700, margin: "0 0 16px" }}>Platform</h4>

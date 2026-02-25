@@ -90,7 +90,6 @@ const InstructorDashboard = () => {
           >+ Create Course</Link>
         </div>
 
-        {/* Stat cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20, marginBottom: 40 }}>
           {cards.map((card, i) => (
             <div key={i} className="tp-stat-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 80}ms`, opacity: 0, animationFillMode: "forwards" }}>
@@ -106,7 +105,6 @@ const InstructorDashboard = () => {
           ))}
         </div>
 
-        {/* Revenue chart */}
         <div className="tp-stat-card" style={{ marginBottom: 32, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "250ms", opacity: 0, animationFillMode: "forwards" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
             <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: 0 }}>Revenue Overview</h3>
@@ -123,7 +121,6 @@ const InstructorDashboard = () => {
           </div>
         </div>
 
-        {/* My courses */}
         <div style={{ marginBottom: 32 }}>
           <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px", display: "flex", alignItems: "center", gap: 10 }}>
             📚 My Courses ({courses.length})
@@ -161,7 +158,6 @@ const InstructorDashboard = () => {
           )}
         </div>
 
-        {/* Recent Enrollments Table */}
         {stats.recentEnrollments && stats.recentEnrollments.length > 0 && (
           <div style={{ marginBottom: 40, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "300ms", opacity: 0, animationFillMode: "forwards" }}>
             <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px" }}>Recent Enrollments</h3>

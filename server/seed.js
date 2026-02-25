@@ -10,7 +10,6 @@ async function seed() {
     await mongoose.connect(uri);
     console.log("Connected to DB");
 
-    // Create tutor user
     let tutor = await User.findOne({ email: "tutor@tutorpro.com" });
     if (!tutor) {
         const hash = await bcrypt.hash("Tutor@123", 10);

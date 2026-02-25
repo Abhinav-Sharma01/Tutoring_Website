@@ -132,13 +132,12 @@ const Register = () => {
     "Personalized learning roadmap",
     "Track progress with beautiful dashboards",
     "Earn verifiable certificates",
-    "Join 5,000+ learners",
+    "Join a community that's learning, improving, and moving forward together.",
   ];
 
   return (
     <div className="tp-register" style={{ display: "flex", minHeight: "calc(100vh - 64px)", background: bg, fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      {/* Left panel */}
       <div style={{ width: "48%", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 64px" }} className="tp-grid-bg">
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(145deg, #0e0018 0%, #0a0016 60%, #0d001e 100%)", zIndex: 0 }} />
         <div style={{ position: "absolute", width: 550, height: 550, borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%)", top: "-60px", right: "-60px", pointerEvents: "none", animation: "tp-glow-pulse 7s ease-in-out infinite", zIndex: 1 }} />
@@ -163,7 +162,6 @@ const Register = () => {
             Create your free account and get instant access to hundreds of expert-led courses.
           </p>
 
-          {/* Progress indicator */}
           <div style={{ marginBottom: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
               <span style={{ fontSize: "0.78rem", color: muted, letterSpacing: "0.06em" }}>SETUP PROGRESS</span>
@@ -179,7 +177,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Perks */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {perks.map((perk, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, animation: "tp-float-in-left 0.5s ease forwards", animationDelay: `${i * 100 + 200}ms`, opacity: 0 }}>
@@ -193,7 +190,6 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Form panel */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 40px", background: "#04080f", position: "relative" }}>
         <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
 
@@ -207,7 +203,6 @@ const Register = () => {
             </p>
           </div>
 
-          {/* Error */}
           {error && (
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", borderRadius: 12, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", marginBottom: 24, animation: "tp-fade-up 0.3s ease" }}>
               <span style={{ fontSize: "1rem" }}>⚠️</span>
@@ -218,7 +213,6 @@ const Register = () => {
 
 
           <form onSubmit={register}>
-            {/* Role selector */}
             <div style={{ marginBottom: 22 }}>
               <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#8ab0bf", marginBottom: 10, letterSpacing: "0.04em", textTransform: "uppercase" }}>I want to join as</label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -242,7 +236,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Name */}
             <div style={{ marginBottom: 18 }}>
               <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: focused === "name" ? accent : "#8ab0bf", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Full Name</label>
               <div style={{ position: "relative" }}>
@@ -254,7 +247,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Email */}
             <div style={{ marginBottom: 18 }}>
               <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: focused === "email" ? accent : "#8ab0bf", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Email Address</label>
               <div style={{ position: "relative" }}>
@@ -266,7 +258,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div style={{ marginBottom: 24 }}>
               <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: focused === "pwd" ? accent : "#8ab0bf", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Password</label>
               <div style={{ position: "relative" }}>
@@ -291,7 +282,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Agreement */}
             <label style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 28, cursor: "pointer" }}>
               <div style={{ position: "relative", flexShrink: 0, marginTop: 2 }}>
                 <input type="checkbox" name="agree" checked={form.agree} onChange={handleChange} style={{ display: "none" }} />

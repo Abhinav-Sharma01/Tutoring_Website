@@ -13,13 +13,11 @@ export const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null;
 
-        // Upload the file on cloudinary
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto", // Automatically detect video vs image
             folder: "tutorpro_videos",
         });
 
-        // File has been uploaded successfully
         fs.unlinkSync(localFilePath); // Remove locally saved temporary file
         return response;
     } catch (error) {
@@ -35,7 +33,6 @@ export const deleteFromCloudinary = async (cloudUrl) => {
     try {
         if (!cloudUrl) return null;
 
-        // Example URL: http://res.cloudinary.com/dvzxyz/video/upload/v123.../tutorpro_videos/filename.mp4
         const urlParts = cloudUrl.split("/");
         const filenameWithExt = urlParts[urlParts.length - 1];
         const folder = urlParts[urlParts.length - 2];

@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.post("/download", protect, generateCertificate);
 
-// Verification endpoint
 router.get("/verify/:id", (req, res) => {
   res.json({
     valid: true,

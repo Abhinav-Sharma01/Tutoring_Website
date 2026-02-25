@@ -16,7 +16,6 @@ const enrollCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Prevent duplicate enrollment
     const exists = await Enrollment.findOne({ studentId, courseId });
     if (exists) {
       return res
@@ -83,7 +82,6 @@ const adminEnrollStudent = async (req, res) => {
 
     const studentId = targetUser._id;
 
-    // Prevent duplicate enrollment
     const exists = await Enrollment.findOne({ studentId, courseId });
     if (exists) {
       return res.status(400).json({ message: "Student is already enrolled in this course" });
@@ -111,7 +109,6 @@ const checkEnrollment = async (req, res) => {
     const studentId = req.user.id;
     const { courseId } = req.params;
 
-    // Admins get automatic access
     if (req.user.role === "admin") {
       return res.status(200).json({ enrolled: true });
     }
@@ -121,7 +118,6 @@ const checkEnrollment = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Course creator gets automatic access
     if (req.user.role === "tutor" && course.tutorId.toString() === studentId) {
       return res.status(200).json({ enrolled: true });
     }

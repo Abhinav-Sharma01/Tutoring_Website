@@ -90,7 +90,6 @@ const MyCourses = () => {
     <div className="tp-my tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
 
-        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
           <div>
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 2.6rem)", margin: "0 0 8px" }}>My Courses</h1>
@@ -102,7 +101,6 @@ const MyCourses = () => {
           >+ Browse more</Link>
         </div>
 
-        {/* Tabs */}
         <div style={{ display: "flex", gap: 10, marginBottom: 32, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "80ms", opacity: 0, animationFillMode: "forwards" }}>
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setFilter(tab.key)} className={`tp-pill ${filter === tab.key ? "active" : ""}`}>
@@ -111,7 +109,6 @@ const MyCourses = () => {
           ))}
         </div>
 
-        {/* Content */}
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 24px", background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 24, animation: "tp-fade-up 0.5s ease forwards" }}>
             <div style={{ fontSize: "3rem", marginBottom: 16 }}>📚</div>
@@ -134,7 +131,6 @@ const MyCourses = () => {
                         <span style={{ flexShrink: 0, padding: "3px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: isCompleted ? "rgba(52,211,153,0.12)" : "rgba(0,212,255,0.1)", color: isCompleted ? "#34d399" : accent }}>{isCompleted ? "✓ Completed" : "In Progress"}</span>
                       </div>
                       {c?.category && <p style={{ color: muted, fontSize: "0.85rem", margin: "0 0 12px" }}>{c.category} • {c.level}{c.lessons ? ` • ${c.lessons.length} lesson${c.lessons.length !== 1 ? "s" : ""}` : ""}</p>}
-                      {/* Progress */}
                       <div style={{ maxWidth: 400 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                           <span style={{ fontSize: "0.76rem", color: muted }}>Progress</span>

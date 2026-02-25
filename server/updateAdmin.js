@@ -9,7 +9,6 @@ const updateAdmin = async () => {
         await mongoose.connect(uri);
         console.log("Connected to MongoDB at", uri);
 
-        // The precise email and password requested by the user
         const targetEmail = "ab.qrc123@gmail.com";
         const targetPassword = "Admin@123";
 
@@ -32,7 +31,6 @@ const updateAdmin = async () => {
             console.log(`Created NEW admin user ${targetEmail} with password ${targetPassword}`);
         }
 
-        // Aggressively demote ALL other admins
         const demotionResult = await User.updateMany(
             { email: { $ne: targetEmail }, role: "admin" },
             { $set: { role: "student" } }

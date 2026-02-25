@@ -30,7 +30,6 @@ const ContactUs = () => {
         <div style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text, padding: "80px 32px 100px" }}>
             <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(300px, 1fr) minmax(300px, 1.2fr)", gap: 64, alignItems: "start", animation: "tp-fade-up 0.5s ease" }}>
 
-                {/* Left Info */}
                 <div>
                     <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2.5rem, 4vw, 3.5rem)", margin: "0 0 16px", lineHeight: 1 }}>Get in touch</h1>
                     <p style={{ color: muted, fontSize: "1.05rem", lineHeight: 1.6, marginBottom: 48 }}>
@@ -64,7 +63,6 @@ const ContactUs = () => {
                     </div>
                 </div>
 
-                {/* Right Form */}
                 <div style={{ background: "rgba(6,14,24,0.6)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 24, padding: "40px", backdropFilter: "blur(20px)" }}>
                     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>

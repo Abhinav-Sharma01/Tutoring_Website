@@ -84,7 +84,6 @@ const Navbar = () => {
     }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "center", height: 64 }}>
 
-        {/* Brand */}
         <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 34, height: 34, borderRadius: 10, background: `linear-gradient(135deg, ${accent}, #0094ff)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 16px rgba(0,212,255,0.3)`, transition: "transform 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "scale(1.08)"}
@@ -97,7 +96,6 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
         <div style={{ display: "flex", alignItems: "center", gap: 4 }} className="tp-nav-desktop">
           <Link to="/courses" style={navStyle("/courses")}
             onMouseEnter={e => { if (!isActive("/courses")) e.target.style.color = accent; }}
@@ -129,9 +127,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Right side */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }} className="tp-nav-right">
-          {/* Notifications */}
           {user && (
             <div ref={notifRef} style={{ position: "relative" }}>
               <button
@@ -198,7 +194,6 @@ const Navbar = () => {
 
               {profileOpen && (
                 <div style={{ position: "absolute", right: 0, marginTop: 8, width: 280, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
-                  {/* User info */}
                   <div style={{ padding: "16px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       {user.avatar_url ? (
@@ -214,7 +209,6 @@ const Navbar = () => {
                     <span style={{ display: "inline-block", marginTop: 10, padding: "3px 10px", borderRadius: 100, fontSize: "0.7rem", fontWeight: 700, color: role.color, background: `${role.color}15`, border: `1px solid ${role.color}30`, letterSpacing: "0.06em" }}>{role.text}</span>
                   </div>
 
-                  {/* Links */}
                   <div style={{ padding: "6px 0" }}>
                     {[
                       { to: "/dashboard", label: "Dashboard", icon: "⊞" },
@@ -231,7 +225,6 @@ const Navbar = () => {
                     ))}
                   </div>
 
-                  {/* Logout */}
                   <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "6px 0" }}>
                     <button onClick={logout} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 18px", fontSize: "0.88rem", fontWeight: 600, color: "#f87171", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "'Cabinet Grotesk', sans-serif", transition: "background 0.2s" }}
                       onMouseEnter={e => e.currentTarget.style.background = "rgba(248,113,113,0.06)"}
@@ -256,7 +249,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Mobile hamburger */}
           <button onClick={() => setMenuOpen(!menuOpen)} style={{ display: "none", width: 38, height: 38, borderRadius: 10, background: "transparent", border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", alignItems: "center", justifyContent: "center", color: "#9bbeca" }} className="tp-mobile-toggle">
             {menuOpen
               ? <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -265,7 +257,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(3,9,18,0.98)", padding: "16px 32px 24px", display: "flex", flexDirection: "column", gap: 4 }} className="tp-mobile-menu">
           <Link to="/courses" style={{ ...navStyle("/courses"), display: "block", padding: "12px 16px" }}>Courses</Link>

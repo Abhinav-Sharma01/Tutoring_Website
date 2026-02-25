@@ -149,7 +149,6 @@ const CreateCourse = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* Course details card */}
                     <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 24, padding: "36px 32px", marginBottom: 28, backdropFilter: "blur(12px)", animation: "tp-fade-up 0.6s ease forwards", animationDelay: "0.1s" }}>
                         <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.4rem", margin: "0 0 28px", display: "flex", alignItems: "center", gap: 10 }}>
                             <span style={{ fontSize: "1.2rem" }}>📘</span> Course Details
@@ -190,7 +189,6 @@ const CreateCourse = () => {
                         </div>
                     </div>
 
-                    {/* Lessons card */}
                     <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 24, padding: "36px 32px", marginBottom: 28, backdropFilter: "blur(12px)", animation: "tp-fade-up 0.6s ease forwards", animationDelay: "0.2s" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
                             <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.4rem", margin: 0, display: "flex", alignItems: "center", gap: 10 }}>
@@ -240,7 +238,6 @@ const CreateCourse = () => {
                         ))}
                     </div>
 
-                    {/* Submit */}
                     <div style={{ animation: "tp-fade-up 0.6s ease forwards", animationDelay: "0.3s" }}>
                         <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px 32px", background: loading ? "rgba(0,212,255,0.3)" : "linear-gradient(135deg, #00d4ff, #0094ff)", border: "none", borderRadius: 14, color: "#fff", fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: "1.05rem", fontWeight: 800, cursor: loading ? "not-allowed" : "pointer", transition: "all 0.3s ease", boxShadow: loading ? "none" : "0 4px 30px rgba(0,212,255,0.35)", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
                             {loading ? (

@@ -58,7 +58,6 @@ const Settings = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Check if it's an image
         if (!file.type.startsWith('image/')) {
             toast.error("Please select a valid image file (JPG, PNG)");
             return;
@@ -99,7 +98,6 @@ const Settings = () => {
 
         try {
             const res = await api.put("/auth/update-profile", formData);
-            // Backend returns the updated user inside res.data.user
             setUser(res.data.user);
             toast.success("Profile updated successfully!", { id: toastId });
             setTimeout(() => navigate("/dashboard"), 800);
@@ -114,7 +112,6 @@ const Settings = () => {
     const text = "#e2f5f5";
     const accent = "#00d4ff";
 
-    // If initial load hasn't fired yet
     if (!user) return <div style={{ background: bg, minHeight: "100vh" }} />;
 
     const initial = formData.username ? formData.username.charAt(0).toUpperCase() : "?";

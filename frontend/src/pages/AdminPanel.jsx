@@ -82,7 +82,6 @@ const AdminPanel = () => {
   const students = users.filter(u => u.role === "student");
   const tutors = users.filter(u => u.role === "tutor");
 
-  // Filter for users registered in the past 2 days (48 hours)
   const twoDaysAgo = new Date();
   twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
   const recentUsers = [...users]
@@ -115,7 +114,6 @@ const AdminPanel = () => {
     <div className="tp-admin tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text, padding: "0 0 80px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 32px" }}>
 
-        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease" }}>
           <div>
             <div style={{ display: "inline-flex", items: "center", gap: 8, padding: "5px 14px", borderRadius: 100, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", marginBottom: 12, fontSize: "0.75rem", color: "#f87171", fontWeight: 700 }}>
@@ -129,7 +127,6 @@ const AdminPanel = () => {
           <Link to="/create-course" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 24px", borderRadius: 100, background: `linear-gradient(135deg, ${accent}, #0094ff)`, color: "#001820", textDecoration: "none", fontWeight: 800, fontSize: "0.85rem", boxShadow: "0 4px 24px rgba(0,212,255,0.3)" }}>+ New Course</Link>
         </div>
 
-        {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
           {tabs.map(t => (
             <button key={t.key} onClick={() => { setTab(t.key); setSearchQuery(""); }} style={{
@@ -143,7 +140,6 @@ const AdminPanel = () => {
           ))}
         </div>
 
-        {/* Overview Tab */}
         {tab === "overview" && (
           <div style={{ animation: "tp-fade-up 0.5s ease" }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20, marginBottom: 36 }}>
@@ -166,7 +162,6 @@ const AdminPanel = () => {
               ))}
             </div>
 
-            {/* Recent registrations */}
             <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, padding: "28px 24px", backdropFilter: "blur(12px)" }}>
               <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px", display: "flex", alignItems: "center", gap: 10 }}>
                 🔔 Recent Registrations (Past 48 Hours)
@@ -202,7 +197,6 @@ const AdminPanel = () => {
           </div>
         )}
 
-        {/* All Users Tab */}
         {tab === "users" && (
           <div style={{ animation: "tp-fade-up 0.5s ease" }}>
             <div style={{ position: "relative", marginBottom: 24 }}>
@@ -258,7 +252,6 @@ const AdminPanel = () => {
           </div>
         )}
 
-        {/* Students Tab */}
         {tab === "students" && (
           <div style={{ animation: "tp-fade-up 0.5s ease" }}>
             <div style={{ position: "relative", marginBottom: 24 }}>
@@ -303,7 +296,6 @@ const AdminPanel = () => {
           </div>
         )}
 
-        {/* Tutors Tab */}
         {tab === "tutors" && (
           <div style={{ animation: "tp-fade-up 0.5s ease" }}>
             <div style={{ position: "relative", marginBottom: 24 }}>
@@ -348,7 +340,6 @@ const AdminPanel = () => {
           </div>
         )}
 
-        {/* Courses Tab */}
         {tab === "courses" && (
           <div style={{ animation: "tp-fade-up 0.5s ease" }}>
             <div style={{ position: "relative", marginBottom: 24 }}>

@@ -182,7 +182,6 @@ const Courses = () => {
   return (
     <div className="tp-courses tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      {/* Header */}
       <div style={{ position: "relative", overflow: "hidden", borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "64px 32px 56px" }}>
         <div style={{ position: "absolute", width: 600, height: 300, background: "radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%)", top: 0, left: "50%", transform: "translateX(-50%)", pointerEvents: "none", animation: "tp-glow-pulse 8s ease-in-out infinite" }} />
         <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
@@ -197,7 +196,6 @@ const Courses = () => {
             Discover your next skill. Browse expert-crafted courses across tech, design, data, and beyond.
           </p>
 
-          {/* Search bar */}
           <div style={{ maxWidth: 680, position: "relative" }}>
             <svg style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", color: muted, pointerEvents: "none" }} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -212,10 +210,8 @@ const Courses = () => {
 
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "40px 32px 80px" }}>
 
-        {/* Filters */}
         <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, padding: "24px 28px", marginBottom: 36, backdropFilter: "blur(12px)" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" }}>
-            {/* Category */}
             <div style={{ flex: "1 1 auto" }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 800, color: "#5aafb8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>Category</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -227,10 +223,8 @@ const Courses = () => {
               </div>
             </div>
 
-            {/* Divider */}
             <div style={{ width: 1, background: "rgba(255,255,255,0.06)", alignSelf: "stretch", minHeight: 60 }} />
 
-            {/* Level */}
             <div>
               <div style={{ fontSize: "0.72rem", fontWeight: 800, color: "#5aafb8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>Level</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -244,7 +238,6 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Results */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ color: text, fontWeight: 700, fontSize: "1rem" }}>
@@ -256,7 +249,6 @@ const Courses = () => {
               </button>
             )}
           </div>
-          {/* View mode toggle */}
           <div style={{ display: "flex", gap: 8 }}>
             <button className={`tp-view-btn ${viewMode === "grid" ? "active" : ""}`} onClick={() => setViewMode("grid")}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
@@ -267,7 +259,6 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Courses */}
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 24px", background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 24 }}>
             <div style={{ fontSize: "3rem", marginBottom: 16 }}>🔍</div>
@@ -281,26 +272,21 @@ const Courses = () => {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
             {filtered.map((course, i) => (
               <Link key={course._id} to={`/course/${course._id}`} className="tp-course-card-grid" style={{ animationDelay: `${i * 50}ms`, animation: "tp-fade-up 0.5s ease forwards", opacity: 0, animationFillMode: "forwards" }}>
-                {/* Thumbnail */}
                 <div style={{ height: 195, background: thumbGrads[i % 6], position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {course.thumbnail ? (
                     <img src={course.thumbnail} alt={course.title} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }} />
                   ) : (
                     <span style={{ fontSize: "3.2rem", opacity: 0.9 }}>{thumbEmojis[i % 6]}</span>
                   )}
-                  {/* Hover overlay */}
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)", opacity: 0, transition: "opacity 0.35s" }} className="tp-thumb-overlay" />
-                  {/* Price badge */}
                   <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(3,9,18,0.88)", backdropFilter: "blur(10px)", border: "1px solid rgba(0,212,255,0.2)", padding: "5px 14px", borderRadius: 100, fontSize: "0.82rem", fontWeight: 800, color: "#00d4ff", fontFamily: "'Cabinet Grotesk', sans-serif" }}>
                     {course.price ? `₹${course.price}` : <span style={{ color: "#34d399" }}>Free</span>}
                   </div>
-                  {/* Level badge */}
                   <div style={{ position: "absolute", bottom: 14, left: 14, background: "rgba(3,9,18,0.75)", backdropFilter: "blur(8px)", padding: "4px 10px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, color: "#8ab0bf", textTransform: "capitalize" }}>
                     {course.level || "All levels"}
                   </div>
                 </div>
 
-                {/* Content */}
                 <div style={{ padding: "20px 22px 24px" }}>
                   <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
                     <span style={{ padding: "4px 12px", borderRadius: 100, background: "rgba(0,212,255,0.08)", border: "1px solid rgba(0,212,255,0.15)", color: "#7de8f5", fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.04em" }}>{course.category || "General"}</span>
@@ -324,17 +310,14 @@ const Courses = () => {
             ))}
           </div>
         ) : (
-          // LIST VIEW
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {filtered.map((course, i) => (
               <Link key={course._id} to={`/course/${course._id}`} className="tp-course-card-list" style={{ animationDelay: `${i * 40}ms`, animation: "tp-fade-up 0.5s ease forwards", opacity: 0, animationFillMode: "forwards" }}>
-                {/* Thumb */}
                 <div style={{ width: 160, minHeight: 110, background: thumbGrads[i % 6], flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>
                   {course.thumbnail ? (
                     <img src={course.thumbnail} alt={course.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : thumbEmojis[i % 6]}
                 </div>
-                {/* Content */}
                 <div style={{ padding: "18px 24px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                   <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                     <span style={{ padding: "3px 10px", borderRadius: 100, background: "rgba(0,212,255,0.08)", color: "#7de8f5", fontSize: "0.71rem", fontWeight: 700 }}>{course.category || "General"}</span>
@@ -351,7 +334,6 @@ const Courses = () => {
                     </div>
                   )}
                 </div>
-                {/* Price + Action */}
                 <div style={{ padding: "18px 24px", display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: 12, borderLeft: "1px solid rgba(255,255,255,0.05)", minWidth: 140 }}>
                   <div style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800, fontSize: "1.2rem", color: "#00d4ff" }}>
                     {course.price ? `₹${course.price}` : <span style={{ color: "#34d399" }}>Free</span>}
@@ -363,7 +345,6 @@ const Courses = () => {
           </div>
         )}
 
-        {/* CTA */}
         {filtered.length > 6 && (
           <div style={{ textAlign: "center", marginTop: 64, padding: "60px 32px", background: "rgba(6,14,24,0.6)", border: "1px solid rgba(0,212,255,0.08)", borderRadius: 24, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", width: 400, height: 300, background: "radial-gradient(ellipse, rgba(0,212,255,0.05) 0%, transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", pointerEvents: "none" }} />

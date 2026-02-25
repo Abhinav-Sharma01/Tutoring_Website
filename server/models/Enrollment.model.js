@@ -31,7 +31,6 @@ const enrollmentSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Prevent duplicate enrollments
 enrollmentSchema.index(
     { studentId: 1, courseId: 1 },
     { unique: true }

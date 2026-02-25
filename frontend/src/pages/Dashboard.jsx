@@ -74,7 +74,6 @@ const Dashboard = () => {
           <p style={{ color: muted, fontSize: "1rem", margin: "0 0 48px" }}>Here's your learning snapshot</p>
         </div>
 
-        {/* Stats Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginBottom: 40, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "100ms", opacity: 0, animationFillMode: "forwards" }}>
           {stats.map((s, i) => (
             <div key={i} className="tp-stat-card">
@@ -89,7 +88,6 @@ const Dashboard = () => {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "200ms", opacity: 0, animationFillMode: "forwards" }}>
-          {/* Weekly Activity */}
           <div className="tp-stat-card">
             <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 24px" }}>Weekly Activity</h3>
             <div style={{ display: "flex", alignItems: "flex-end", gap: 12, height: 120 }}>
@@ -102,7 +100,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Learning Streak */}
           <div className="tp-stat-card" style={{ background: `linear-gradient(135deg, rgba(0,212,255,0.08), rgba(167,139,250,0.05))`, border: "1px solid rgba(0,212,255,0.12)" }}>
             <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>🔥</div>
             <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.5rem", margin: "0 0 8px" }}>{currentStreak}-Day Streak!</h3>
@@ -114,7 +111,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
         <div style={{ marginTop: 40, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "300ms", opacity: 0, animationFillMode: "forwards" }}>
           <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px" }}>Quick Actions</h3>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>

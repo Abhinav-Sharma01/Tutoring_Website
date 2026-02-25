@@ -1,6 +1,5 @@
 import { Notification } from "../models/Notification.model.js";
 
-// Fetch all notifications for the logged-in user
 export const getUserNotifications = async (req, res) => {
     try {
         const notifications = await Notification.find({ recipient: req.user.id })
@@ -14,7 +13,6 @@ export const getUserNotifications = async (req, res) => {
     }
 };
 
-// Clear all user notifications (Dismiss All)
 export const clearAllNotifications = async (req, res) => {
     try {
         await Notification.deleteMany({ recipient: req.user.id });
@@ -25,7 +23,6 @@ export const clearAllNotifications = async (req, res) => {
     }
 };
 
-// Delete a single notification
 export const deleteNotification = async (req, res) => {
     try {
         const { id } = req.params;

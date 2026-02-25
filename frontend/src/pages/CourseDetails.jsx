@@ -23,7 +23,6 @@ const CourseDetails = () => {
   const [adminEnrollEmail, setAdminEnrollEmail] = useState("");
   const [enrollingStudent, setEnrollingStudent] = useState(false);
 
-  // Rename states
   const [isEditingCourse, setIsEditingCourse] = useState(false);
   const [editCourseTitle, setEditCourseTitle] = useState("");
   const [editingLessonIndex, setEditingLessonIndex] = useState(null);
@@ -106,20 +105,17 @@ const CourseDetails = () => {
 
     setUploadingVideo(true);
     try {
-      // 1. Upload video to Cloudinary
       const formData = new FormData();
       formData.append("video", newLessonVideo);
       const uploadRes = await api.post("/upload/video", formData, { headers: { "Content-Type": "multipart/form-data" } });
       const videoUrl = uploadRes.data.videoUrl;
 
-      // 2. Append new lesson to existing course
       const finalDuration = newLessonDuration.trim() !== "" ? newLessonDuration : "0 min";
       const newLesson = { title: newLessonTitle, duration: finalDuration, videoUrl };
       const updatedLessons = [...course.lessons, newLesson];
 
       const updateRes = await api.put(`/courses/${id}`, { lessons: updatedLessons });
 
-      // 3. Update local state
       setCourse(updateRes.data.course);
       setShowAddLesson(false);
       setNewLessonTitle("");
@@ -255,7 +251,6 @@ const CourseDetails = () => {
   return (
     <div className="tp-cd tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      {/* Breadcrumb */}
       <div style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "12px 32px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: 8, fontSize: "0.85rem", color: muted }}>
           <Link to="/" style={{ color: muted, textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = accent} onMouseLeave={e => e.target.style.color = muted}>Home</Link>
@@ -266,7 +261,6 @@ const CourseDetails = () => {
         </div>
       </div>
 
-      {/* Hero header */}
       <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #001828 0%, #00121c 50%, #001a2a 100%)", borderBottom: "1px solid rgba(0,212,255,0.08)", padding: "56px 32px" }}>
         <div style={{ position: "absolute", width: 600, height: 400, background: "radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 70%)", top: "-60px", right: "-60px", pointerEvents: "none", animation: "tp-glow-pulse 7s ease-in-out infinite" }} />
         <div className="tp-grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
@@ -319,12 +313,9 @@ const CourseDetails = () => {
         </div>
       </div>
 
-      {/* Content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px 80px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 32, alignItems: "start" }}>
-          {/* Main */}
           <div>
-            {/* What you'll learn */}
             <div className="tp-card" style={{ marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards" }}>
               <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px", display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ color: "#34d399" }}>✓</span> What you'll learn
@@ -339,11 +330,9 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            {/* Lessons & Video Player */}
             {course.lessons && (course.lessons.length > 0 || canEdit) && (
               <div className="tp-card" style={{ padding: 0, marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards", animationDelay: "100ms", opacity: 0, animationFillMode: "forwards", overflow: "hidden" }}>
 
-                {/* Video Player */}
                 {isEnrolled && course.lessons[activeLesson]?.videoUrl && (
                   <div style={{ background: "#000", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative", paddingTop: "56.25%" }}>
                     <video
@@ -403,7 +392,6 @@ const CourseDetails = () => {
                         <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "0.85rem" }}>🔒</span>
                       )}
 
-                      {/* Edit Lesson Button (Only for Admins/Tutors) */}
                       {canEdit && editingLessonIndex !== i && (
                         <button
                           onClick={(e) => { e.stopPropagation(); setEditingLessonIndex(i); setEditLessonTitle(lesson.title); }}
@@ -420,7 +408,6 @@ const CourseDetails = () => {
                         </button>
                       )}
 
-                      {/* Delete Lesson Button (Only for Admins/Tutors) */}
                       {canEdit && (
                         <button
                           onClick={(e) => handleDeleteLesson(e, i)}
@@ -442,7 +429,6 @@ const CourseDetails = () => {
                   </div>
                 ))}
 
-                {/* Add Lesson Button for Instructors/Admins */}
                 {canEdit && (
                   <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(0,212,255,0.02)" }}>
                     <button
@@ -458,7 +444,6 @@ const CourseDetails = () => {
               </div>
             )}
 
-            {/* Reviews */}
             {reviews.length > 0 && (
               <div className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: "200ms", opacity: 0, animationFillMode: "forwards" }}>
                 <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 24px" }}>Student Reviews</h2>
@@ -504,7 +489,6 @@ const CourseDetails = () => {
             )}
           </div>
 
-          {/* Sidebar */}
           <div style={{ position: "sticky", top: 80 }}>
             <div className="tp-card" style={{ padding: 0, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.4), 0 0 30px rgba(0,212,255,0.04)", animation: "tp-fade-up 0.5s ease forwards" }}>
               {course.thumbnail && <img src={course.thumbnail} alt={course.title} style={{ width: "100%", height: 180, objectFit: "cover" }} />}
@@ -546,7 +530,6 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            {/* Delete Entire Course Button (Only for Admins/Tutors) */}
             {canEdit && (
               <div style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: 12 }}>
                 {user?.role === "admin" && (
@@ -595,7 +578,6 @@ const CourseDetails = () => {
         </div>
       </div>
 
-      {/* Add Lesson Modal */}
       {
         showAddLesson && (
           <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
@@ -634,7 +616,6 @@ const CourseDetails = () => {
         )
       }
 
-      {/* Admin Manual Enroll Modal */}
       {
         user?.role === "admin" && showAdminEnroll && (
           <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>

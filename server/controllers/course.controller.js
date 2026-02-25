@@ -124,7 +124,6 @@ const updateCourse = async (req, res) => {
                 await deleteFromCloudinary(url);
             }
 
-            // Check if any existing lesson title changed
             for (let i = 0; i < Math.min(course.lessons.length, req.body.lessons.length); i++) {
                 if (course.lessons[i].title !== req.body.lessons[i].title) {
                     lessonTitleChanged = true;
@@ -141,7 +140,6 @@ const updateCourse = async (req, res) => {
 
         await course.save();
 
-        // Async notification logic to avoid blocking response
         if (courseTitleChanged || lessonTitleChanged) {
             Promise.resolve().then(async () => {
                 try {
@@ -171,8 +169,6 @@ const updateCourse = async (req, res) => {
                             }
                         }
 
-                        // If one or both changed, we might have duplicate notifications, that's fine or we could deduplicate.
-                        // Inserting all created notifications.
                         if (notifications.length > 0) {
                             await Notification.insertMany(notifications);
                         }

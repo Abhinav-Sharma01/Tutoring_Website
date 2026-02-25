@@ -14,7 +14,6 @@ const testSave = async () => {
         }
 
         console.log("Found course:", course.title);
-        // Try saving the exact existing course without modifications, just to trigger Mongoose validation.
         course.markModified("lessons"); // force Mongoose to validate the arrays
         await course.save();
         console.log("Save successful!");

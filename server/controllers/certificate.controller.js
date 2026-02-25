@@ -10,17 +10,14 @@ const generateCertificate = async (req, res) => {
 
   doc.pipe(res);
 
-  // Border
   doc.rect(20, 20, doc.page.width - 40, doc.page.height - 40).stroke();
 
-  // Title
   doc.fontSize(30).text("Certificate of Completion", {
     align: "center",
   });
 
   doc.moveDown(2);
 
-  // Body
   doc.fontSize(18).text("This certifies that", { align: "center" });
 
   doc.moveDown();
@@ -39,7 +36,6 @@ const generateCertificate = async (req, res) => {
 
   doc.moveDown(3);
 
-  // Signature
   doc.fontSize(14).text("____________________", 100, doc.page.height - 100);
   doc.text("Instructor Signature", 100, doc.page.height - 80);
 

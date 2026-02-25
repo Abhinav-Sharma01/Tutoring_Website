@@ -128,29 +128,24 @@ const Login = () => {
   return (
     <div className="tp-login" style={{ display: "flex", minHeight: "calc(100vh - 64px)", background: bg, fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      {/* Left panel */}
       <div style={{ width: "48%", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 64px" }} className="tp-grid-bg">
-        {/* Gradient overlays */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, #001828 0%, #000f1a 60%, #001220 100%)", zIndex: 0 }} />
         <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%)", top: "-80px", right: "-80px", pointerEvents: "none", animation: "tp-glow-pulse 7s ease-in-out infinite", zIndex: 1 }} />
         <div style={{ position: "absolute", width: 350, height: 350, borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%)", bottom: "-60px", left: "-40px", pointerEvents: "none", animation: "tp-glow-pulse 9s ease-in-out infinite reverse", zIndex: 1 }} />
 
-        {/* Decorative corner accent */}
         <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 2, background: "linear-gradient(90deg, transparent, #00d4ff, #a78bfa, transparent)", opacity: 0.4, zIndex: 2 }} />
 
         <div style={{ position: "relative", zIndex: 3 }}>
-          {/* Brand */}
           <div style={{ marginBottom: 56 }}>
             <div style={{ fontFamily: "'Instrument Serif', serif", fontSize: "2rem", marginBottom: 4 }}>
               Tutor<span style={{ color: "#00d4ff" }}>Pro</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399", display: "inline-block", animation: "tp-blink 2s infinite" }} />
-              <span style={{ fontSize: "0.78rem", color: "#5aafb8", letterSpacing: "0.08em" }}>5,000+ learners growing daily</span>
+              <span style={{ fontSize: "0.78rem", color: "#5aafb8", letterSpacing: "0.08em" }}>Join a community that's learning, improving, and moving forward together.</span>
             </div>
           </div>
 
-          {/* Headline */}
           <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 3.5vw, 2.8rem)", lineHeight: 1.1, marginBottom: 24 }}>
             Welcome back to<br />your <em className="tp-gradient-text" style={{ fontStyle: "normal" }}>learning journey</em>
           </h2>
@@ -158,7 +153,6 @@ const Login = () => {
             Pick up right where you left off. Your progress, your courses, your certificates — all waiting for you.
           </p>
 
-          {/* Feature list */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {panelFeatures.map((f, i) => (
               <div key={i} className="tp-feature-item" style={{ animationDelay: `${i * 120 + 300}ms` }}>
@@ -171,7 +165,6 @@ const Login = () => {
             ))}
           </div>
 
-          {/* Social proof avatars */}
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 56, paddingTop: 40, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ display: "flex" }}>
               {["#00d4ff", "#a78bfa", "#34d399", "#f87171"].map((c, i) => (
@@ -180,19 +173,16 @@ const Login = () => {
                 </div>
               ))}
             </div>
-            <span style={{ fontSize: "0.83rem", color: muted }}>Join 5,000+ learners</span>
+            <span style={{ fontSize: "0.83rem", color: muted }}>Join a community that's learning, improving, and moving forward together.</span>
           </div>
         </div>
       </div>
 
-      {/* Form panel */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 40px", background: "#040c16", position: "relative" }}>
-        {/* Subtle center glow */}
         <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,212,255,0.04) 0%, transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
 
         <div style={{ width: "100%", maxWidth: 420, position: "relative", animation: "tp-slide-right 0.6s ease forwards" }}>
 
-          {/* Header */}
           <div style={{ marginBottom: 36 }}>
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "2.1rem", margin: "0 0 10px", letterSpacing: "-0.01em" }}>Sign in</h1>
             <p style={{ color: muted, margin: 0, fontSize: "0.92rem" }}>
@@ -203,9 +193,7 @@ const Login = () => {
 
 
 
-          {/* Form */}
           <form onSubmit={login}>
-            {/* Email */}
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: "block", fontSize: "0.83rem", fontWeight: 700, color: focused === "email" ? "#00d4ff" : "#8ab0bf", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Email Address</label>
               <div style={{ position: "relative" }}>
@@ -216,7 +204,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div style={{ marginBottom: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <label style={{ fontSize: "0.83rem", fontWeight: 700, color: focused === "pwd" ? "#00d4ff" : "#8ab0bf", letterSpacing: "0.04em", textTransform: "uppercase", transition: "color 0.3s" }}>Password</label>
@@ -233,13 +220,11 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember me */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
               <input type="checkbox" id="remember" style={{ width: 16, height: 16, accentColor: "#00d4ff", cursor: "pointer" }} />
               <label htmlFor="remember" style={{ fontSize: "0.87rem", color: muted, cursor: "pointer" }}>Remember me for 30 days</label>
             </div>
 
-            {/* Submit */}
             <button type="submit" className="tp-submit-btn" disabled={loading}>
               {loading ? (
                 <>
@@ -260,7 +245,6 @@ const Login = () => {
             <Link to="/register" style={{ color: "#00d4ff", textDecoration: "none", fontWeight: 700 }}>Sign up free</Link>
           </p>
 
-          {/* Trust signals */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginTop: 32, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
             {["🔒 Secure login", "✓ No spam", "⚡ Instant access"].map((t, i) => (
               <span key={i} style={{ fontSize: "0.75rem", color: muted }}>{t}</span>

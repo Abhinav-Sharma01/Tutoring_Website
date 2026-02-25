@@ -9,7 +9,6 @@ const AboutUs = () => {
     return (
         <div style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text, padding: "0 0 100px", overflow: "hidden" }}>
 
-            {/* Hero */}
             <div style={{ position: "relative", padding: "100px 32px", textAlign: "center", borderBottom: "1px solid rgba(255,255,255,0.04)", background: "linear-gradient(180deg, rgba(0,212,255,0.03) 0%, transparent 100%)" }}>
                 <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
                 <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", animation: "tp-fade-up 0.5s ease" }}>
@@ -26,7 +25,6 @@ const AboutUs = () => {
                 </div>
             </div>
 
-            {/* Grid Stats */}
             <div style={{ maxWidth: 1000, margin: "-40px auto 60px", padding: "0 32px", position: "relative", zIndex: 10, animation: "tp-fade-up 0.7s ease" }}>
                 <div style={{ background: "rgba(6,14,24,0.8)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 24, padding: "32px 48px", backdropFilter: "blur(20px)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32, textAlign: "center", boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }}>
                     {[
@@ -43,7 +41,6 @@ const AboutUs = () => {
                 </div>
             </div>
 
-            {/* Story */}
             <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 32px" }}>
                 <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "2.2rem", margin: "0 0 24px" }}>Our Mission</h2>
                 <div style={{ color: muted, fontSize: "1.05rem", lineHeight: 1.8, display: "flex", flexDirection: "column", gap: 20 }}>
