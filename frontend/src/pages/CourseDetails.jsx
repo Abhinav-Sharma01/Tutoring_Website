@@ -359,6 +359,7 @@ const CourseDetails = () => {
                     <video
                       key={course.lessons[activeLesson].videoUrl}
                       controls
+                      autoPlay
                       controlsList="nodownload"
                       style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "contain" }}
                       src={course.lessons[activeLesson].videoUrl}
