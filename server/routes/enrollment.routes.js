@@ -7,7 +7,8 @@ import {
     checkEnrollment,
     completeCourse,
     getEnrollmentStats,
-    adminEnrollStudent
+    adminEnrollStudent,
+    markVideoWatched
 } from "../controllers/enrollment.controller.js";
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.get("/my-enrollments", protect, getMyEnrollments);
 router.get("/check/:courseId", protect, checkEnrollment);
 
 router.post("/complete", protect, completeCourse);
+
+router.post("/watch", protect, markVideoWatched);
 
 router.get("/stats", protect, getEnrollmentStats);
 

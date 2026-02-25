@@ -12,6 +12,7 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [watchedVideos, setWatchedVideos] = useState([]);
   const [activeLesson, setActiveLesson] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [showAddLesson, setShowAddLesson] = useState(false);
@@ -44,7 +45,12 @@ const CourseDetails = () => {
         setCourse(courseRes.data.course || courseRes.data);
         setEditCourseTitle((courseRes.data.course || courseRes.data).title);
         setReviews(reviewsRes.data.reviews || []);
-        if (checkRes) setIsEnrolled(checkRes.data.enrolled);
+        if (checkRes) {
+          setIsEnrolled(checkRes.data.enrolled);
+          if (checkRes.data.enrollment?.watchedVideos) {
+            setWatchedVideos(checkRes.data.enrollment.watchedVideos);
+          }
+        }
       } catch (err) {
         toast.error("Course not found");
       } finally {
@@ -67,6 +73,21 @@ const CourseDetails = () => {
       toast.error(err.response?.data?.message || "Failed to enroll student");
     } finally {
       setEnrollingStudent(false);
+    }
+  };
+
+  const handleVideoEnded = async () => {
+    if (!user || user.role === "admin" || (user.role === "tutor" && course?.tutorId?._id === user.id)) return; // Don't track admins/tutors
+    if (watchedVideos.includes(activeLesson)) return; // Already watched
+
+    try {
+      const res = await api.post("/enrollments/watch", { courseId: id, lessonIndex: activeLesson });
+      setWatchedVideos(res.data.watchedVideos);
+      if (res.data.status === "completed") {
+        toast.success("Course Completed! 🎉", { icon: "🎓" });
+      }
+    } catch (err) {
+      console.error("Failed to mark video as watched", err);
     }
   };
 
@@ -341,6 +362,7 @@ const CourseDetails = () => {
                       controlsList="nodownload"
                       style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "contain" }}
                       src={course.lessons[activeLesson].videoUrl}
+                      onEnded={handleVideoEnded}
                     >
                       Your browser does not support the video tag.
                     </video>
@@ -380,7 +402,10 @@ const CourseDetails = () => {
                         </div>
                       ) : (
                         <div>
-                          <span style={{ fontWeight: (activeLesson === i && isEnrolled) ? 800 : 700, color: (activeLesson === i && isEnrolled) ? "#fff" : text, fontSize: "0.9rem", display: "block", transition: "all 0.2s" }}>{lesson.title}</span>
+                          <span style={{ fontWeight: (activeLesson === i && isEnrolled) ? 800 : 700, color: (activeLesson === i && isEnrolled) ? "#fff" : text, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s" }}>
+                            {lesson.title}
+                            {watchedVideos.includes(i) && <span style={{ color: "#34d399", fontSize: "0.85rem" }}>✓</span>}
+                          </span>
                           {lesson.duration && <span style={{ fontSize: "0.76rem", color: (activeLesson === i && isEnrolled) ? "#a2c1d1" : muted }}>{lesson.duration}</span>}
                         </div>
                       )}

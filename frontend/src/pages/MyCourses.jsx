@@ -66,10 +66,13 @@ const MyCourses = () => {
     } catch { toast.error("Failed to download certificate"); }
   };
 
-  const filtered = filter === "all" ? enrollments : enrollments.filter(e => e.status === filter);
+  const filtered = filter === "all" ? enrollments
+    : filter === "active" ? enrollments.filter(e => e.status === "active" && e.progress > 0)
+      : enrollments.filter(e => e.status === filter);
+
   const tabs = [
     { key: "all", label: "All", count: enrollments.length },
-    { key: "active", label: "In Progress", count: enrollments.filter(e => e.status === "active").length },
+    { key: "active", label: "In Progress", count: enrollments.filter(e => e.status === "active" && e.progress > 0).length },
     { key: "completed", label: "Completed", count: enrollments.filter(e => e.status === "completed").length },
   ];
 
@@ -121,14 +124,15 @@ const MyCourses = () => {
             {filtered.map((enrollment, i) => {
               const c = enrollment.courseId;
               const isCompleted = enrollment.status === "completed";
-              const progress = isCompleted ? 100 : Math.floor(Math.random() * 60 + 20);
+              const progress = enrollment.progress || 0;
+              const isStarted = progress > 0 || isCompleted;
               return (
                 <div key={enrollment._id} className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 60}ms`, opacity: 0, animationFillMode: "forwards" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                         <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c?.title ?? "Course"}</h3>
-                        <span style={{ flexShrink: 0, padding: "3px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: isCompleted ? "rgba(52,211,153,0.12)" : "rgba(0,212,255,0.1)", color: isCompleted ? "#34d399" : accent }}>{isCompleted ? "✓ Completed" : "In Progress"}</span>
+                        <span style={{ flexShrink: 0, padding: "3px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: isCompleted ? "rgba(52,211,153,0.12)" : isStarted ? "rgba(0,212,255,0.1)" : "rgba(255,255,255,0.05)", color: isCompleted ? "#34d399" : isStarted ? accent : muted }}>{isCompleted ? "✓ Completed" : isStarted ? "In Progress" : "Not Started"}</span>
                       </div>
                       {c?.category && <p style={{ color: muted, fontSize: "0.85rem", margin: "0 0 12px" }}>{c.category} • {c.level}{c.lessons ? ` • ${c.lessons.length} lesson${c.lessons.length !== 1 ? "s" : ""}` : ""}</p>}
                       <div style={{ maxWidth: 400 }}>

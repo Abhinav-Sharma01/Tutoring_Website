@@ -126,6 +126,7 @@ const checkEnrollment = async (req, res) => {
 
     return res.status(200).json({
       enrolled: !!enrollment,
+      enrollment
     });
   } catch (error) {
     console.error("Check enrollment error:", error.message);
@@ -158,6 +159,56 @@ const completeCourse = async (req, res) => {
   }
 };
 
+const markVideoWatched = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const { courseId, lessonIndex } = req.body;
+
+    if (!courseId || typeof lessonIndex !== "number") {
+      return res.status(400).json({ message: "Course ID and Lesson Index are required" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const enrollment = await Enrollment.findOne({ studentId, courseId });
+    if (!enrollment) {
+      return res.status(404).json({ message: "You are not enrolled in this course" });
+    }
+
+    if (!enrollment.watchedVideos.includes(lessonIndex)) {
+      enrollment.watchedVideos.push(lessonIndex);
+    }
+
+    const totalLessons = course.lessons.length;
+    const progress = totalLessons > 0
+      ? Math.floor((enrollment.watchedVideos.length / totalLessons) * 100)
+      : 0;
+
+    enrollment.progress = progress;
+
+    if (progress === 100) {
+      enrollment.status = "completed";
+    } else {
+      enrollment.status = "active";
+    }
+
+    await enrollment.save();
+
+    res.status(200).json({
+      message: "Video progress saved",
+      progress: enrollment.progress,
+      status: enrollment.status,
+      watchedVideos: enrollment.watchedVideos
+    });
+  } catch (error) {
+    console.error("Mark video watched error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getEnrollmentStats = async (req, res) => {
   try {
     const studentId = req.user.id;
@@ -186,6 +237,7 @@ export {
   adminEnrollStudent,
   checkEnrollment,
   completeCourse,
-  getEnrollmentStats
+  getEnrollmentStats,
+  markVideoWatched
 };
 

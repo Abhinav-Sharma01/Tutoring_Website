@@ -24,6 +24,9 @@ const enrollmentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    watchedVideos: [{
+        type: Number
+    }],
     paymentStatus: {
         type: String,
         enum: ["pending", "success", "failed"],
