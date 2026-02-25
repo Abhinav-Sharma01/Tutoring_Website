@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Courses from "./pages/Courses";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 import CourseDetails from "./pages/CourseDetails";
 import MyCourses from "./pages/MyCourses";
 import PaymentHistory from "./pages/PaymentHistory";
@@ -26,9 +27,9 @@ function AnimatedRoutes() {
     <div key={location.pathname} className="page-enter">
       <Routes location={location}>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/course/:id" element={<CourseDetails />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
