@@ -14,8 +14,17 @@ const Navbar = () => {
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
-  const logout = async () => { try { await api.post("/auth/logout"); } finally { setUser(null); setProfileOpen(false); } };
+  const navigate = useNavigate();
 
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      setUser(null);
+      setProfileOpen(false);
+      navigate("/login");
+    }
+  };
   useEffect(() => { const fn = () => setScrolled(window.scrollY > 8); window.addEventListener("scroll", fn, { passive: true }); return () => window.removeEventListener("scroll", fn); }, []);
   useEffect(() => { setMenuOpen(false); setProfileOpen(false); setNotificationsOpen(false); }, [location.pathname]);
   useEffect(() => { const fn = (e) => { if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false); if (notifRef.current && !notifRef.current.contains(e.target)) setNotificationsOpen(false); }; document.addEventListener("mousedown", fn); return () => document.removeEventListener("mousedown", fn); }, []);
