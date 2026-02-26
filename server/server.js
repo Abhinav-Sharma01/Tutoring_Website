@@ -21,7 +21,8 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
-  "https://tutoring-website-one-omega.vercel.app"
+  "https://tutoring-website-one-omega.vercel.app",
+  "https://tutoring-website-qgjl.vercel.app"
 ].filter(Boolean);
 
 // Helper to check origin
