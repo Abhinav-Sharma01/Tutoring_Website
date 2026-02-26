@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
-const cached = { conn: null, promise: null };
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
 
 export const connectDB = async () => {
     if (cached.conn) {
@@ -15,8 +19,12 @@ export const connectDB = async () => {
         }
 
         console.log("🔥 connectDB() is running...");
-        const uri = `${process.env.MONGO_URI}/${process.env.DB_NAME}?appName=Cluster0`
-        cached.promise = mongoose.connect(uri).then((mongoose) => {
+        const uri = `${process.env.MONGO_URI}/${process.env.DB_NAME}?appName=Cluster0`;
+        const opts = {
+            bufferCommands: false,
+        };
+
+        cached.promise = mongoose.connect(uri, opts).then((mongoose) => {
             console.log("MongoDB Connected:", mongoose.connection.host);
             return mongoose;
         });

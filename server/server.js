@@ -1,4 +1,16 @@
 import "dotenv/config";
+
+// Global process handlers to catch Vercel Serverless crashes in logs
+process.on("uncaughtException", (err) => {
+  console.error("🔥 UNCAUGHT EXCEPTION 🔥 - Serverless Crash:");
+  console.error(err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("🔥 UNHANDLED REJECTION 🔥 - Serverless Crash:");
+  console.error(err);
+});
+
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";

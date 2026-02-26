@@ -39,6 +39,6 @@ enrollmentSchema.index(
     { unique: true }
 );
 
-export const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
+export const Enrollment = mongoose.models.Enrollment || mongoose.model("Enrollment", enrollmentSchema);
 
 
