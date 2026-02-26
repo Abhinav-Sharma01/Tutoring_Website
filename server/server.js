@@ -17,21 +17,35 @@ import adminRoutes from "./routes/admin.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
+
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
-  "https://tutoring-website-one-omega.vercel.app/"
+  "https://tutoring-website-one-omega.vercel.app"
 ].filter(Boolean);
+
+// Helper to check origin
+const checkOrigin = (origin, callback) => {
+  if (!origin) return callback(null, true);
+
+  // Remove trailing slash if present for strict comparison
+  const originWithoutSlash = origin.endsWith("/") ? origin.slice(0, -1) : origin;
+
+  const isAllowed = allowedOrigins.some(allowed => {
+    const allowedWithoutSlash = allowed.endsWith("/") ? allowed.slice(0, -1) : allowed;
+    return originWithoutSlash === allowedWithoutSlash;
+  });
+
+  if (isAllowed) {
+    callback(null, true);
+  } else {
+    callback(new Error("Not allowed by CORS"));
+  }
+};
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: checkOrigin,
     credentials: true,
   }),
 );
@@ -55,6 +69,10 @@ app.use("/api/payment-history", paymentHistoryRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "API is running... Vercel Deployment Successful." });
+});
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
