@@ -73,7 +73,16 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-connectDB();
+// Await connection dynamically for Vercel
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);

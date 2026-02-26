@@ -1,14 +1,29 @@
 import mongoose from "mongoose";
 
+const cached = { conn: null, promise: null };
+
 export const connectDB = async () => {
-    try {
+    if (cached.conn) {
+        console.log("🔥 Using cached MongoDB connection");
+        return cached.conn;
+    }
+
+    if (!cached.promise) {
         console.log("🔥 connectDB() is running...");
         const uri = `${process.env.MONGO_URI}/${process.env.DB_NAME}?appName=Cluster0`
-        const connect = await mongoose.connect(uri);
-        console.log("MongoDB Connected:", connect.connection.host);
-    }catch(error) {
+        cached.promise = mongoose.connect(uri).then((mongoose) => {
+            console.log("MongoDB Connected:", mongoose.connection.host);
+            return mongoose;
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+        return cached.conn;
+    } catch (error) {
+        cached.promise = null;
         console.error("Error connecting to DB:", error.message);
-        process.exit(1);
+        throw error;
     }
 }
 
