@@ -25,27 +25,25 @@ const allowedOrigins = [
   "https://tutoring-website-qgjl.vercel.app"
 ].filter(Boolean);
 
-// Helper to check origin
-const checkOrigin = (origin, callback) => {
-  if (!origin) return callback(null, true);
-
-  // Remove trailing slash if present for strict comparison
-  const originWithoutSlash = origin.endsWith("/") ? origin.slice(0, -1) : origin;
-
-  const isAllowed = allowedOrigins.some(allowed => {
-    const allowedWithoutSlash = allowed.endsWith("/") ? allowed.slice(0, -1) : allowed;
-    return originWithoutSlash === allowedWithoutSlash;
-  });
-
-  if (isAllowed) {
-    callback(null, true);
-  } else {
-    callback(new Error("Not allowed by CORS"));
-  }
-};
-
+// Dynamic origin logic that won't crash on undefined
 const corsOptions = {
-  origin: checkOrigin,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    // Check if the origin is in our allowed list
+    const isAllowed = allowedOrigins.some(allowed =>
+      origin === allowed ||
+      origin === `${allowed}/` ||
+      `${origin}/` === allowed
+    );
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked CORS request from origin: ${origin}`);
+      callback(new Error('CORS Error: Origin not allowed'));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
