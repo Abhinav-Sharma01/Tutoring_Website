@@ -16,9 +16,11 @@ import instructorRoutes from "./routes/instructor.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 
-
 const app = express();
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+const allowedOrigin =
+  process.env.FRONTEND_URL ||
+  "http://localhost:5173" ||
+  "https://tutoring-website-one-omega.vercel.app/";
 app.use(
   cors({
     origin: allowedOrigin,
