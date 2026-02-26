@@ -44,12 +44,28 @@ const checkOrigin = (origin, callback) => {
   }
 };
 
-app.use(
-  cors({
-    origin: checkOrigin,
-    credentials: true,
-  }),
-);
+const corsOptions = {
+  origin: checkOrigin,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// Explicit headers middleware just in case vercel strips it
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  next();
+});
+
 app.use(morgan("dev"));
 
 app.use(cookieParser());
