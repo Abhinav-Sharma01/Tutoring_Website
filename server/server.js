@@ -37,8 +37,6 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-
-    // Clean the origin by removing trailing slashes for reliable comparison
     const cleanOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
 
     const isAllowed = allowedOrigins.some(allowed => {
@@ -75,13 +73,12 @@ app.use((req, res, next) => {
   });
 
   if (isAllowed) {
-    res.header('Access-Control-Allow-Origin', origin); // Must return exact origin requested for credentials
+    res.header('Access-Control-Allow-Origin', origin);
   }
 
   res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
 
-  // Handle preflight explicitly
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

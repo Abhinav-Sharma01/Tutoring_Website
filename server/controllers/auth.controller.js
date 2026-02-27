@@ -85,8 +85,8 @@ const registerUser = async (req, res) => {
         const isProduction = process.env.NODE_ENV === "production";
         const cookieOpts = {
             httpOnly: true,
-            secure: isProduction, // true on Vercel, false on localhost
-            sameSite: isProduction ? "none" : "lax", // cross-domain on Vercel, same-site locally
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
         };
         res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
