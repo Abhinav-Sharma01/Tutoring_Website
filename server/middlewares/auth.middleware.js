@@ -51,11 +51,10 @@ export const protect = async (req, res, next) => {
                 JWT_ACCESS_TOKEN_SECRET,
                 { expiresIn: "15m" }
             )
-            const isProduction = process.env.NODE_ENV === "production";
             res.cookie("accessToken", newaccessToken, {
                 httpOnly: true,
-                secure: isProduction,
-                sameSite: "lax",
+                secure: true,
+                sameSite: "none",
                 maxAge: 15 * 60 * 1000,
             });
         }

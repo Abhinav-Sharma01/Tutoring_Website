@@ -82,11 +82,10 @@ const registerUser = async (req, res) => {
         user.refreshToken = RefreshToken;
         await user.save();
 
-        const isProduction = process.env.NODE_ENV === "production";
         const cookieOpts = {
             httpOnly: true,
-            secure: isProduction,
-            sameSite: "lax",
+            secure: true, // MUST be true for SameSite='none' cross-domain
+            sameSite: "none", // REQUIRED for Vercel cross-domain cookies
         };
         res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
@@ -190,8 +189,11 @@ const loginUser = async (req, res) => {
         await userExists.save();
 
 
-        const isProduction = process.env.NODE_ENV === "production";
-        const cookieOpts = { httpOnly: true, secure: isProduction, sameSite: "lax" };
+        const cookieOpts = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        };
         res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
 
@@ -251,8 +253,8 @@ const getCurrentUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
     try {
-        res.clearCookie("accessToken", { httpOnly: true, sameSite: "lax" })
-            .clearCookie("refreshToken", { httpOnly: true, sameSite: "lax" });
+        res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "none" })
+            .clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" });
         return res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Logout failed" });
@@ -309,8 +311,11 @@ const googleAuth = async (req, res) => {
         updateStreakInfo(user);
         await user.save();
 
-        const isProduction = process.env.NODE_ENV === "production";
-        const cookieOpts = { httpOnly: true, secure: isProduction, sameSite: "lax" };
+        const cookieOpts = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        };
         res.cookie("refreshToken", RefreshToken, { ...cookieOpts, maxAge: 7 * 24 * 60 * 60 * 1000 })
             .cookie("accessToken", AccessToken, { ...cookieOpts, maxAge: 15 * 60 * 1000 });
 
