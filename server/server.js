@@ -62,7 +62,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 // Explicit headers middleware just in case vercel strips it
 app.use((req, res, next) => {
