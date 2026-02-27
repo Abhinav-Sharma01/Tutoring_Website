@@ -704,8 +704,13 @@ html.dark .tooltip-trigger::after {
 
 /* ═══════════════════ GLOBAL MOBILE RESPONSIVENESS OVERRIDES ═══════════════════ */
 @media (max-width: 768px) {
+
   /* Normalize aggressive vertical padding on sections */
-  section {
+  section,
+  div[style*="padding: 120px"],
+  div[style*="padding: 100px"],
+  div[style*="padding: 80px"],
+  div[style*="padding: 60px"] {
     padding-top: 60px !important;
     padding-bottom: 40px !important;
     padding-left: 16px !important;
@@ -713,11 +718,14 @@ html.dark .tooltip-trigger::after {
   }
 
   /* Force standard container padding */
-  .tp-home > div,
-  .tp-cd > div,
-  .tp-courses > div,
-  .tp-dashboard > div,
-  #root > div > div {
+  .tp-home>div,
+  .tp-cd>div,
+  .tp-courses>div,
+  .tp-dashboard>div,
+  div[style*="max-width: 1200"],
+  div[style*="max-width: 1000"],
+  div[style*="max-width: 800"],
+  #root>div>div {
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
@@ -735,9 +743,19 @@ html.dark .tooltip-trigger::after {
     font-size: clamp(2rem, 8vw, 2.5rem) !important;
     line-height: 1.1 !important;
   }
-  
+
   h2 {
     font-size: clamp(1.5rem, 6vw, 1.8rem) !important;
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 5vw, 1.4rem) !important;
+  }
+
+  /* Make text blocks wrap better */
+  p {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
   }
 
   /* Make stats rows wrap correctly on tiny screens */
@@ -746,9 +764,9 @@ html.dark .tooltip-trigger::after {
     gap: 20px !important;
     flex-direction: column !important;
   }
-  
+
   /* Hide the vertical dividers in stats on mobile */
-  .tp-animate-fade-up[style*="border-radius: 20px"] > div > div[style*="width: 1px"] {
+  .tp-animate-fade-up[style*="border-radius: 20px"]>div>div[style*="width: 1px"] {
     display: none !important;
   }
 
@@ -761,12 +779,68 @@ html.dark .tooltip-trigger::after {
     padding: 16px !important;
     border-radius: 16px !important;
   }
-  
+
   /* Shrink floating animations to prevent horizontal layout shift */
   div[style*="width: 700"],
   div[style*="width: 600"],
   div[style*="width: 900"] {
     max-width: 100vw !important;
     height: 100vw !important;
+  }
+
+  /* ───── AUTH PAGES MOBILE FIXES ───── */
+  .tp-login,
+  .tp-register {
+    flex-direction: column !important;
+    min-height: auto !important;
+  }
+
+  /* Hide the decorative left side of auth pages on mobile, or shrink it */
+  .tp-login>div:first-child,
+  .tp-register>div:first-child {
+    width: 100% !important;
+    padding: 40px 24px 20px !important;
+    flex: none !important;
+  }
+
+  .tp-login>div:last-child,
+  .tp-register>div:last-child {
+    width: 100% !important;
+    padding: 24px 24px 60px !important;
+    flex: none !important;
+  }
+
+  /* Make auth headings smaller */
+  .tp-login h1,
+  .tp-register h1,
+  form h1,
+  form h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .tp-login h2,
+  .tp-register h2 {
+    font-size: 1.6rem !important;
+  }
+
+  /* Settings and Dashboard Grids */
+  div[style*="max-width: 1200"]>div[style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Settings Menu Layout */
+  div[style*="display: flex"][style*="max-width: 1000"] {
+    flex-direction: column !important;
+  }
+
+  /* Input width overrides */
+  div[style*="width: 250px"],
+  div[style*="width: 280px"],
+  div[style*="width: 300px"],
+  div[style*="min-width: 200px"],
+  div[style*="min-width: 250px"] {
+    width: 100% !important;
+    min-width: 100% !important;
   }
 }
