@@ -272,7 +272,16 @@ const CourseDetails = () => {
     .tp-gradient-text { background: linear-gradient(135deg, #00d4ff, #a78bfa); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: tp-shimmer 3s linear infinite; }
     .tp-lesson-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; }
     .tp-lesson-row:hover { background: rgba(0,212,255,0.03); }
-    .tp-lesson-row:last-child { border-bottom: none; }`;
+    .tp-lesson-row:last-child { border-bottom: none; }
+    .tp-responsive-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start; }
+    @media (max-width: 900px) {
+      .tp-responsive-grid { grid-template-columns: 1fr; gap: 24px; }
+      .tp-card { padding: 20px; }
+      .tp-hide-mobile { display: none; }
+      .tp-header-title { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; }
+      .tp-review-stats { flex-direction: column; align-items: center; gap: 20px !important; }
+      .tp-review-bars { width: 100%; min-width: 0 !important; }
+    }`;
     document.head.appendChild(s);
     return () => s.remove();
   }, []);
@@ -289,7 +298,7 @@ const CourseDetails = () => {
           <div className="tp-skeleton" style={{ width: "40%", height: 20 }} />
         </div>
       </div>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px", display: "grid", gridTemplateColumns: "2fr 1fr", gap: 32 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px" }} className="tp-responsive-grid">
         <div><div className="tp-skeleton" style={{ height: 260, marginBottom: 20 }} /><div className="tp-skeleton" style={{ height: 200 }} /></div>
         <div className="tp-skeleton" style={{ height: 320 }} />
       </div>
@@ -358,7 +367,7 @@ const CourseDetails = () => {
               </div>
             ) : (
               <>
-                <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 3.2rem)", margin: 0, lineHeight: 1.1 }}>{course.title}</h1>
+                <h1 className="tp-header-title" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 3.2rem)", margin: 0, lineHeight: 1.1 }}>{course.title}</h1>
                 {canEdit && (
                   <button onClick={() => setIsEditingCourse(true)} style={{ background: "rgba(0,212,255,0.1)", border: "1px dashed rgba(0,212,255,0.4)", borderRadius: "50%", width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", color: accent, cursor: "pointer", transition: "all 0.2s" }} title="Edit Course Title">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -382,7 +391,7 @@ const CourseDetails = () => {
       </div>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 32, alignItems: "start" }}>
+        <div className="tp-responsive-grid">
           <div>
             <div className="tp-card" style={{ marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards" }}>
               <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 20px", display: "flex", alignItems: "center", gap: 8 }}>
@@ -521,15 +530,15 @@ const CourseDetails = () => {
             {reviews.length > 0 && (
               <div className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: "200ms", opacity: 0, animationFillMode: "forwards" }}>
                 <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "1.3rem", margin: "0 0 24px" }}>Student Reviews</h2>
-                <div style={{ display: "flex", gap: 32, marginBottom: 24, paddingBottom: 24, borderBottom: "1px solid rgba(255,255,255,0.05)", flexWrap: "wrap" }}>
-                  <div style={{ textAlign: "center" }}>
+                <div className="tp-review-stats" style={{ display: "flex", gap: 32, marginBottom: 24, paddingBottom: 24, borderBottom: "1px solid rgba(255,255,255,0.05)", flexWrap: "wrap" }}>
+                  <div style={{ textAlign: "center", minWidth: 100 }}>
                     <p style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 4px", letterSpacing: "-0.04em" }}>{avgRating}</p>
                     <div style={{ display: "flex", gap: 2, justifyContent: "center", marginBottom: 6 }}>
                       {[...Array(5)].map((_, i) => <span key={i} style={{ color: i < Math.round(avgRating) ? "#fbbf24" : "rgba(255,255,255,0.1)", fontSize: "0.95rem" }}>★</span>)}
                     </div>
                     <p style={{ color: muted, fontSize: "0.82rem" }}>{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
                   </div>
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minWidth: 200 }}>
+                  <div className="tp-review-bars" style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minWidth: 200 }}>
                     {ratingDist.map(rd => (
                       <div key={rd.star} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <span style={{ color: muted, fontSize: "0.82rem", width: 12 }}>{rd.star}</span>
