@@ -86,17 +86,37 @@ const CreateCourse = () => {
     const handleVideoUpload = async (index, file) => {
         if (!file) return;
         setUploading(index);
-        const formData = new FormData();
-        formData.append("video", file);
 
         try {
-            const res = await api.post("/upload/video", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
-            updateLesson(index, "videoUrl", res.data.videoUrl);
+            const { data } = await api.get("/upload/signature?folder=tutoring/videos");
+            const { signature, timestamp, folder, cloudName, apiKey } = data;
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("api_key", apiKey);
+            formData.append("timestamp", timestamp);
+            formData.append("signature", signature);
+            formData.append("folder", folder);
+
+            const uploadRes = await fetch(
+                `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            const cloudinaryData = await uploadRes.json();
+
+            if (!uploadRes.ok) {
+                throw new Error(cloudinaryData.error?.message || "Cloudinary upload failed");
+            }
+
+            updateLesson(index, "videoUrl", cloudinaryData.secure_url);
             toast.success("Video uploaded successfully!");
         } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to upload video");
+            console.error("Direct upload error:", err);
+            toast.error(err.message || "Failed to upload video");
         } finally {
             setUploading(null);
         }

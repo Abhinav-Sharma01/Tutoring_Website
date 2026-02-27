@@ -152,10 +152,31 @@ const CourseDetails = () => {
 
     setUploadingVideo(true);
     try {
+      const { data } = await api.get("/upload/signature?folder=tutoring/videos");
+      const { signature, timestamp, folder, cloudName, apiKey } = data;
+
       const formData = new FormData();
-      formData.append("video", newLessonVideo);
-      const uploadRes = await api.post("/upload/video", formData, { headers: { "Content-Type": "multipart/form-data" } });
-      const videoUrl = uploadRes.data.videoUrl;
+      formData.append("file", newLessonVideo);
+      formData.append("api_key", apiKey);
+      formData.append("timestamp", timestamp);
+      formData.append("signature", signature);
+      formData.append("folder", folder);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const cloudinaryData = await uploadRes.json();
+
+      if (!uploadRes.ok) {
+        throw new Error(cloudinaryData.error?.message || "Cloudinary upload failed");
+      }
+
+      const videoUrl = cloudinaryData.secure_url;
 
       const finalDuration = newLessonDuration.trim() !== "" ? newLessonDuration : "0 min";
       const newLesson = { title: newLessonTitle, duration: finalDuration, videoUrl };

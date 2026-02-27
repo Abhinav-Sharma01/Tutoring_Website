@@ -8,17 +8,14 @@ if (!cached) {
 
 export const connectDB = async () => {
     if (cached.conn) {
-        console.log("🔥 Using cached MongoDB connection");
         return cached.conn;
     }
 
     if (!cached.promise) {
         if (!process.env.MONGO_URI || !process.env.DB_NAME) {
-            console.error("CRITICAL ERROR: MONGO_URI or DB_NAME environment variables are missing.");
             throw new Error("Missing MongoDB Environment Variables");
         }
 
-        console.log("🔥 connectDB() is running...");
         const uri = `${process.env.MONGO_URI}/${process.env.DB_NAME}?appName=Cluster0`;
         const opts = {
             bufferCommands: false,

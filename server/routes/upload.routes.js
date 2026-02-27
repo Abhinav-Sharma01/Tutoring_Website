@@ -6,10 +6,13 @@ import {
     uploadVideoFile,
     uploadAvatar,
     uploadThumbnail,
-    uploadLessonVideo
+    uploadLessonVideo,
+    getCloudinarySignature
 } from "../controllers/upload.controller.js";
 
 const router = express.Router();
+
+router.get("/signature", protect, getCloudinarySignature);
 
 router.post("/video", protect, uploadVideo.single("video"), uploadVideoFile);
 

@@ -1,13 +1,10 @@
 import "dotenv/config";
 
-// Global process handlers to catch Vercel Serverless crashes in logs
 process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCAUGHT EXCEPTION 🔥 - Serverless Crash:");
   console.error(err);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.error("🔥 UNHANDLED REJECTION 🔥 - Serverless Crash:");
   console.error(err);
 });
 
@@ -37,12 +34,9 @@ const allowedOrigins = [
   "https://tutoring-website-qgjl.vercel.app"
 ].filter(Boolean);
 
-// Dynamic origin logic that won't crash on undefined
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-
-    // Check if the origin is in our allowed list
     const isAllowed = allowedOrigins.some(allowed =>
       origin === allowed ||
       origin === `${allowed}/` ||
@@ -64,7 +58,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
-// Explicit headers middleware just in case vercel strips it
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   const origin = req.headers.origin;
@@ -83,7 +76,6 @@ app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Await connection dynamically for Vercel
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -107,7 +99,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "API is running... Vercel Deployment Successful." });
+  res.status(200).json({ message: "API is running..." });
 });
 
 app.use((req, res) => {
