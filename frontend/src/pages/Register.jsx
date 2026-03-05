@@ -83,6 +83,13 @@ const Register = () => {
           linear-gradient(90deg, rgba(167,139,250,0.025) 1px, transparent 1px);
         background-size: 52px 52px;
       }
+
+      @media (max-width: 900px) {
+        .tp-register { flex-direction: column !important; }
+        .tp-register > div:first-child { display: none !important; }
+        .tp-register > div:last-child { padding: 40px 24px !important; width: 100% !important; }
+        .tp-register h1 { font-size: 1.8rem !important; }
+      }
     `;
     document.head.appendChild(style);
     return () => { const el = document.getElementById("tp-register-styles"); if (el) el.remove(); };

@@ -115,6 +115,21 @@ const Courses = () => {
         background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.3); color: #00d4ff;
       }
       .tp-view-btn:hover { border-color: rgba(0,212,255,0.2); color: #00d4ff; }
+
+      @media (max-width: 768px) {
+        .tp-courses-header { padding: 40px 16px !important; }
+        .tp-courses-body { padding: 24px 16px 60px !important; }
+        .tp-course-card-list { flex-direction: column !important; }
+        .tp-course-card-list > div:first-child { width: 100% !important; height: 180px !important; }
+        .tp-course-card-list > div:last-child {
+          border-left: none !important;
+          border-top: 1px solid rgba(255,255,255,0.05) !important;
+          flex-direction: row !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          padding: 16px 24px !important;
+        }
+      }
     `;
     document.head.appendChild(style);
     return () => { const el = document.getElementById("tp-courses-styles"); if (el) el.remove(); };
@@ -182,7 +197,7 @@ const Courses = () => {
   return (
     <div className="tp-courses tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      <div style={{ position: "relative", overflow: "hidden", borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "64px 32px 56px" }}>
+      <div className="tp-courses-header" style={{ position: "relative", overflow: "hidden", borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "64px 32px 56px" }}>
         <div style={{ position: "absolute", width: 600, height: 300, background: "radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%)", top: 0, left: "50%", transform: "translateX(-50%)", pointerEvents: "none", animation: "tp-glow-pulse 8s ease-in-out infinite" }} />
         <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 16px", borderRadius: 100, background: "rgba(0,212,255,0.07)", border: "1px solid rgba(0,212,255,0.18)", marginBottom: 20 }}>
@@ -208,7 +223,7 @@ const Courses = () => {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "40px 32px 80px" }}>
+      <div className="tp-courses-body" style={{ maxWidth: 1280, margin: "0 auto", padding: "40px 32px 80px" }}>
 
         <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, padding: "24px 28px", marginBottom: 36, backdropFilter: "blur(12px)" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" }}>

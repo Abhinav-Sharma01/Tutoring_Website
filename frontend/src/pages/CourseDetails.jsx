@@ -281,6 +281,9 @@ const CourseDetails = () => {
       .tp-header-title { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; }
       .tp-review-stats { flex-direction: column; align-items: center; gap: 20px !important; }
       .tp-review-bars { width: 100%; min-width: 0 !important; }
+      .tp-cd-px { padding-left: 16px !important; padding-right: 16px !important; }
+      .tp-cd-header { padding: 32px 16px !important; }
+      .tp-cd-body { padding: 24px 16px 40px !important; }
     }`;
     document.head.appendChild(s);
     return () => s.remove();
@@ -328,7 +331,7 @@ const CourseDetails = () => {
   return (
     <div className="tp-cd tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
 
-      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "12px 32px" }}>
+      <div className="tp-cd-px" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "12px 32px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: 8, fontSize: "0.85rem", color: muted }}>
           <Link to="/" style={{ color: muted, textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = accent} onMouseLeave={e => e.target.style.color = muted}>Home</Link>
           <span>›</span>
@@ -338,7 +341,7 @@ const CourseDetails = () => {
         </div>
       </div>
 
-      <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #001828 0%, #00121c 50%, #001a2a 100%)", borderBottom: "1px solid rgba(0,212,255,0.08)", padding: "56px 32px" }}>
+      <div className="tp-cd-header" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #001828 0%, #00121c 50%, #001a2a 100%)", borderBottom: "1px solid rgba(0,212,255,0.08)", padding: "56px 32px" }}>
         <div style={{ position: "absolute", width: 600, height: 400, background: "radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 70%)", top: "-60px", right: "-60px", pointerEvents: "none", animation: "tp-glow-pulse 7s ease-in-out infinite" }} />
         <div className="tp-grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
@@ -390,7 +393,7 @@ const CourseDetails = () => {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px 80px" }}>
+      <div className="tp-cd-body" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px 80px" }}>
         <div className="tp-responsive-grid">
           <div>
             <div className="tp-card" style={{ marginBottom: 24, animation: "tp-fade-up 0.5s ease forwards" }}>

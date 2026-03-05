@@ -96,6 +96,13 @@ const Login = () => {
         display: flex; align-items: center; gap: 14px;
         animation: tp-float-in-left 0.6s ease forwards; opacity: 0;
       }
+
+      @media (max-width: 900px) {
+        .tp-login { flex-direction: column !important; }
+        .tp-login > div:first-child { display: none !important; }
+        .tp-login > div:last-child { padding: 40px 24px !important; width: 100% !important; }
+        .tp-login h1 { font-size: 1.8rem !important; }
+      }
     `;
     document.head.appendChild(style);
     return () => { const el = document.getElementById("tp-login-styles"); if (el) el.remove(); };

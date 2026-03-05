@@ -270,6 +270,12 @@ const Home = () => {
       
       .tp-reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s ease; }
       .tp-revealed { opacity: 1; transform: translateY(0); }
+      
+      @media (max-width: 1024px) {
+        .tp-desktop-only { display: none !important; }
+        .tp-home section { padding: 80px 16px 40px !important; }
+        .tp-home h1 { font-size: clamp(2.5rem, 8vw, 4.5rem) !important; }
+      }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -586,7 +592,7 @@ const Home = () => {
         </div>
 
         <div
-          className="tp-animate-slide-right"
+          className="tp-animate-slide-right tp-desktop-only"
           style={{
             animationDelay: "500ms",
             position: "absolute",
@@ -597,7 +603,8 @@ const Home = () => {
             borderRadius: 16,
             padding: "16px 20px",
             backdropFilter: "blur(20px)",
-            display: "window.innerWidth > 1100 ? flex : none",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <div style={{ display: "flex", marginBottom: 8 }}>
