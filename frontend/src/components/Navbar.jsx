@@ -150,7 +150,7 @@ const Navbar = () => {
               </button>
 
               {notificationsOpen && (
-                <div style={{ position: "absolute", right: 0, marginTop: 10, width: 340, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
+                <div className="tp-dropdown-menu" style={{ position: "absolute", right: 0, marginTop: 10, width: 340, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2f5f5", fontFamily: "'Cabinet Grotesk', sans-serif" }}>Notifications</h3>
                     {activeNotifications > 0 && (
@@ -202,7 +202,7 @@ const Navbar = () => {
               </button>
 
               {profileOpen && (
-                <div style={{ position: "absolute", right: 0, marginTop: 8, width: 280, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
+                <div className="tp-dropdown-menu" style={{ position: "absolute", right: 0, marginTop: 8, width: 280, borderRadius: 16, background: "rgba(6,14,24,0.95)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.05)", zIndex: 50, animation: "tp-fade-up 0.25s ease forwards", overflow: "hidden" }}>
                   <div style={{ padding: "16px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       {user.avatar_url ? (
@@ -305,6 +305,13 @@ const Navbar = () => {
         @media (max-width: 768px) {
           .tp-nav-desktop { display: none !important; }
           .tp-mobile-toggle { display: flex !important; }
+          .tp-dropdown-menu {
+            position: fixed !important;
+            top: 70px !important;
+            left: 16px !important;
+            right: 16px !important;
+            width: auto !important;
+          }
         }
         @media (min-width: 769px) {
           .tp-mobile-menu { display: none !important; }
