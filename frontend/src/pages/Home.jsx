@@ -512,20 +512,8 @@ const Home = () => {
           )}
         </h1>
 
-        <p
-          className="tp-animate-fade-up"
-          style={{
-            animationDelay: "200ms",
-            fontSize: "1.1rem",
-            color: "#8ab0bf",
-            lineHeight: 1.75,
-            maxWidth: 560,
-            textAlign: "center",
-            marginBottom: 48,
-          }}
-        >
-          TutorPro connects learners with experienced instructors and hands-on
-          courses — helping you build real skills, one lesson at a time.
+        <p>
+          TutorPro helps you build real skills from scratch. Whether you want to land your first job, build your own products, or just learn something new, you'll find everything you need right here.
         </p>
 
         <div
@@ -1336,7 +1324,7 @@ const Home = () => {
                 lineHeight: 1.6,
               }}
             >
-              Empowering learners worldwide with expert-led, adaptive education.
+              Everything you need to learn, build, and grow your career, all in one place.
             </p>
           </div>
           <div style={{ display: "flex", gap: 32 }}>
