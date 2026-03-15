@@ -44,9 +44,11 @@ const getMyEnrollments = async (req, res) => {
   try {
     const studentId = req.user.id;
 
-    const enrollments = await Enrollment.find({ studentId }).populate(
-      "courseId",
-    );
+    // Only return enrollments where payment is successful
+    const enrollments = await Enrollment.find({
+      studentId,
+      paymentStatus: "success"
+    }).populate("courseId");
 
     res.status(200).json({
       total: enrollments.length,
@@ -122,7 +124,11 @@ const checkEnrollment = async (req, res) => {
       return res.status(200).json({ enrolled: true });
     }
 
-    const enrollment = await Enrollment.findOne({ studentId, courseId });
+    const enrollment = await Enrollment.findOne({
+      studentId,
+      courseId,
+      paymentStatus: "success" // Only true if payment succeeded
+    });
 
     return res.status(200).json({
       enrolled: !!enrollment,
