@@ -33,7 +33,9 @@ const createOrder = async (req, res) => {
 
     } catch (error) {
         console.error("Create Order Error:", error);
-        res.status(500).json({ message: "Could not create Razorpay order" });
+        if (error.statusCode) console.error("Razorpay StatusCode:", error.statusCode);
+        if (error.error) console.error("Razorpay Details:", error.error);
+        res.status(500).json({ message: "Could not create Razorpay order", error: error.error || error.message });
     }
 };
 
