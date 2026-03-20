@@ -39,8 +39,8 @@ const MyCourses = () => {
     @media (max-width: 600px) {
       .tp-main-container { padding: 32px 16px 80px !important; }
       .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
-      .tp-card { padding: 16px; }
-      .tp-card-inner { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
+      .tp-card { padding: 16px; width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
+      .tp-card-inner { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
       .tp-card-actions { justify-content: flex-start !important; flex-wrap: wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
     }`;
     document.head.appendChild(s);
@@ -135,9 +135,9 @@ const MyCourses = () => {
               const isStarted = progress > 0 || isCompleted;
               return (
                 <div key={enrollment._id} className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 60}ms`, opacity: 0, animationFillMode: "forwards" }}>
-                  <div className="tp-card-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-                    <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, maxWidth: "100%" }}>
+                  <div className="tp-card-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, maxWidth: "100%" }}>
+                    <div style={{ flex: 1, minWidth: 0, width: "100%", overflow: "hidden" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, maxWidth: "100%", overflow: "hidden" }}>
                         <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>{c?.title ?? "Course"}</h3>
                         <span style={{ flexShrink: 0, padding: "3px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: isCompleted ? "rgba(52,211,153,0.12)" : isStarted ? "rgba(0,212,255,0.1)" : "rgba(255,255,255,0.05)", color: isCompleted ? "#34d399" : isStarted ? accent : muted }}>{isCompleted ? "✓ Completed" : isStarted ? "In Progress" : "Not Started"}</span>
                       </div>

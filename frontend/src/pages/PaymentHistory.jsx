@@ -33,7 +33,7 @@ const PaymentHistory = () => {
       .tp-main-container { padding: 32px 16px 80px !important; }
       .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
       .tp-table-header { display: none !important; }
-      .tp-table-row { grid-template-columns: 1fr; gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; border-radius: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.02); }
+      .tp-table-row { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; border-radius: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.02); width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
       .tp-table-row:hover { background: rgba(255,255,255,0.02); }
       .tp-mobile-label { display: inline-block !important; width: 60px; color: #6b8fa0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
       .tp-mobile-flex { display: flex; alignItems: center; gap: 8px; }

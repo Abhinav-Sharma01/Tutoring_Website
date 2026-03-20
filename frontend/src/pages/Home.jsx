@@ -514,7 +514,7 @@ const Home = () => {
           )}
         </h1>
 
-        <p>
+        <p style={{ maxWidth: 700, textAlign: "center", color: muted, fontSize: "1.15rem", lineHeight: 1.6, margin: "0 auto 36px" }}>
           TutorPro helps you build real skills from scratch. Whether you want to land your first job, build your own products, or just learn something new, you'll find everything you need right here.
         </p>
 
@@ -587,7 +587,7 @@ const Home = () => {
             animationDelay: "500ms",
             position: "absolute",
             right: "5%",
-            top: "20%",
+            top: "42%",
             background: "rgba(8,18,30,0.9)",
             border: "1px solid rgba(0,212,255,0.12)",
             borderRadius: 16,
