@@ -28,7 +28,15 @@ const PaymentHistory = () => {
     .tp-skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: tp-shimmer 1.5s infinite; border-radius: 10px; }
     .tp-grid-bg { background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px); background-size: 52px 52px; }
     .tp-table-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 1fr; gap: 16px; padding: 14px 24px; align-items: center; transition: background 0.2s; }
-    .tp-table-row:hover { background: rgba(0,212,255,0.03); }`;
+    .tp-table-row:hover { background: rgba(0,212,255,0.03); }
+    @media (max-width: 600px) {
+      .tp-table-row { grid-template-columns: 1fr; gap: 10px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; margin-bottom: 8px; border-radius: 12px; background: rgba(255,255,255,0.02); }
+      .tp-table-row:hover { background: rgba(255,255,255,0.02); transform: none; }
+      .tp-table-header { display: none !important; }
+      .tp-table-row > div:first-child { margin-bottom: 4px; }
+      .tp-table-row > span:nth-child(2) { font-size: 1.1rem !important; }
+      .tp-table-row > div:last-child { margin-top: 4px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+    }`;
     document.head.appendChild(s);
     return () => s.remove();
   }, []);
@@ -77,7 +85,7 @@ const PaymentHistory = () => {
           </div>
         ) : (
           <div style={{ background: "rgba(6,14,24,0.7)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, overflow: "hidden", animation: "tp-fade-up 0.5s ease forwards" }}>
-            <div className="tp-table-row" style={{ background: "rgba(0,212,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <div className="tp-table-row tp-table-header" style={{ background: "rgba(0,212,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
               {["Course", "Amount", "Status", "Date"].map(h => <span key={h} style={{ fontSize: "0.72rem", fontWeight: 800, color: "#5aafb8", letterSpacing: "0.1em", textTransform: "uppercase" }}>{h}</span>)}
             </div>
             {history.map((item, i) => {

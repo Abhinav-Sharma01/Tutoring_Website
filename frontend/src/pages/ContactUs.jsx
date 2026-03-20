@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 
 const ContactUs = () => {
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+    }, []);
 
     const bg = "#030912";
     const text = "#e2f5f5";

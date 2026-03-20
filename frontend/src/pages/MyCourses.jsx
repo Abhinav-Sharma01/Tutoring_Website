@@ -35,7 +35,13 @@ const MyCourses = () => {
     .tp-pill { padding: 8px 18px; border-radius: 100px; font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: all 0.25s; border: 1.5px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: rgba(107,143,160,0.9); font-family: 'Cabinet Grotesk', sans-serif; }
     .tp-pill:hover { border-color: rgba(0,212,255,0.25); color: #00d4ff; }
     .tp-pill.active { background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.4); color: #00d4ff; box-shadow: 0 0 16px rgba(0,212,255,0.12); }
-    .tp-grid-bg { background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px); background-size: 52px 52px; }`;
+    .tp-grid-bg { background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px); background-size: 52px 52px; }
+    @media (max-width: 600px) {
+      .tp-card { padding: 18px 16px; }
+      .tp-card > div { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
+      .tp-card > div > div:last-child { align-self: flex-start; flex-wrap: wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; justify-content: flex-start !important; }
+      .tp-pill { padding: 6px 14px; font-size: 0.8rem; }
+    }`;
     document.head.appendChild(s);
     return () => s.remove();
   }, []);
@@ -104,7 +110,7 @@ const MyCourses = () => {
           >+ Browse more</Link>
         </div>
 
-        <div style={{ display: "flex", gap: 10, marginBottom: 32, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "80ms", opacity: 0, animationFillMode: "forwards" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 32, animation: "tp-fade-up 0.6s ease forwards", animationDelay: "80ms", opacity: 0, animationFillMode: "forwards" }}>
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setFilter(tab.key)} className={`tp-pill ${filter === tab.key ? "active" : ""}`}>
               {tab.label} <span style={{ marginLeft: 6, opacity: 0.6 }}>{tab.count}</span>
