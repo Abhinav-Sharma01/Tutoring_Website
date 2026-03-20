@@ -271,8 +271,10 @@ const Home = () => {
       .tp-reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s ease; }
       .tp-revealed { opacity: 1; transform: translateY(0); }
       
-      @media (max-width: 1024px) {
+      @media (max-width: 1150px) {
         .tp-desktop-only { display: none !important; }
+      }
+      @media (max-width: 1024px) {
         .tp-home section { padding: 80px 16px 40px !important; }
         .tp-home h1 { font-size: clamp(2.5rem, 8vw, 4.5rem) !important; }
       }
@@ -585,7 +587,7 @@ const Home = () => {
             animationDelay: "500ms",
             position: "absolute",
             right: "5%",
-            top: "42%",
+            top: "20%",
             background: "rgba(8,18,30,0.9)",
             border: "1px solid rgba(0,212,255,0.12)",
             borderRadius: 16,

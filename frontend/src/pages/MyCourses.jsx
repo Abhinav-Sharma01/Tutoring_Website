@@ -37,6 +37,7 @@ const MyCourses = () => {
     .tp-pill.active { background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.4); color: #00d4ff; box-shadow: 0 0 16px rgba(0,212,255,0.12); }
     .tp-grid-bg { background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px); background-size: 52px 52px; }
     @media (max-width: 600px) {
+      .tp-main-container { padding: 32px 16px 80px !important; }
       .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
       .tp-card { padding: 16px; }
       .tp-card-inner { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
@@ -97,7 +98,7 @@ const MyCourses = () => {
 
   return (
     <div className="tp-my tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
+      <div className="tp-main-container" style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
 
         <div className="tp-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
           <div>
@@ -135,13 +136,13 @@ const MyCourses = () => {
               return (
                 <div key={enrollment._id} className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 60}ms`, opacity: 0, animationFillMode: "forwards" }}>
                   <div className="tp-card-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                        <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c?.title ?? "Course"}</h3>
+                    <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, maxWidth: "100%" }}>
+                        <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>{c?.title ?? "Course"}</h3>
                         <span style={{ flexShrink: 0, padding: "3px 12px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: isCompleted ? "rgba(52,211,153,0.12)" : isStarted ? "rgba(0,212,255,0.1)" : "rgba(255,255,255,0.05)", color: isCompleted ? "#34d399" : isStarted ? accent : muted }}>{isCompleted ? "✓ Completed" : isStarted ? "In Progress" : "Not Started"}</span>
                       </div>
                       {c?.category && <p style={{ color: muted, fontSize: "0.85rem", margin: "0 0 12px" }}>{c.category} • {c.level}{c.lessons ? ` • ${c.lessons.length} lesson${c.lessons.length !== 1 ? "s" : ""}` : ""}</p>}
-                      <div style={{ maxWidth: 400 }}>
+                      <div style={{ maxWidth: 400, width: "100%" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                           <span style={{ fontSize: "0.76rem", color: muted }}>Progress</span>
                           <span style={{ fontSize: "0.76rem", color: isCompleted ? "#34d399" : accent, fontWeight: 700 }}>{progress}%</span>

@@ -30,6 +30,7 @@ const PaymentHistory = () => {
     .tp-table-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 1fr; gap: 16px; padding: 14px 24px; align-items: center; transition: background 0.2s; }
     .tp-table-row:hover { background: rgba(0,212,255,0.03); }
     @media (max-width: 600px) {
+      .tp-main-container { padding: 32px 16px 80px !important; }
       .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
       .tp-table-header { display: none !important; }
       .tp-table-row { grid-template-columns: 1fr; gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; border-radius: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.02); }
@@ -68,7 +69,7 @@ const PaymentHistory = () => {
 
   return (
     <div className="tp-pay tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
+      <div className="tp-main-container" style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
         <div className="tp-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
           <div>
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 2.6rem)", margin: "0 0 8px" }}>Payment History</h1>
@@ -98,9 +99,9 @@ const PaymentHistory = () => {
               const amount = item.amount || item.courseId?.price || 0;
               return (
                 <div key={item._id} className="tp-table-row" style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", animation: "tp-fade-up 0.4s ease forwards", animationDelay: `${i * 40}ms`, opacity: 0, animationFillMode: "forwards" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, maxWidth: "100%", overflow: "hidden" }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, background: "rgba(0,212,255,0.09)", border: "1px solid rgba(0,212,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", flexShrink: 0 }}>📘</div>
-                    <span style={{ fontWeight: 700, fontSize: "0.88rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.courseId?.title ?? "Course"}</span>
+                    <span style={{ fontWeight: 700, fontSize: "0.88rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>{item.courseId?.title ?? "Course"}</span>
                   </div>
                   <div className="tp-mobile-flex">
                     <span className="tp-mobile-label">Amount</span>
