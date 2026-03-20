@@ -30,12 +30,17 @@ const PaymentHistory = () => {
     .tp-table-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 1fr; gap: 16px; padding: 14px 24px; align-items: center; transition: background 0.2s; }
     .tp-table-row:hover { background: rgba(0,212,255,0.03); }
     @media (max-width: 600px) {
-      .tp-table-row { grid-template-columns: 1fr; gap: 10px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; margin-bottom: 8px; border-radius: 12px; background: rgba(255,255,255,0.02); }
-      .tp-table-row:hover { background: rgba(255,255,255,0.02); transform: none; }
+      .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
       .tp-table-header { display: none !important; }
-      .tp-table-row > div:first-child { margin-bottom: 4px; }
-      .tp-table-row > span:nth-child(2) { font-size: 1.1rem !important; }
-      .tp-table-row > div:last-child { margin-top: 4px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+      .tp-table-row { grid-template-columns: 1fr; gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05) !important; border-radius: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.02); }
+      .tp-table-row:hover { background: rgba(255,255,255,0.02); }
+      .tp-mobile-label { display: inline-block !important; width: 60px; color: #6b8fa0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+      .tp-mobile-flex { display: flex; alignItems: center; gap: 8px; }
+      .tp-mobile-end { justify-content: flex-start !important; }
+      .tp-divider { padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
+    }
+    @media (min-width: 601px) {
+      .tp-mobile-label { display: none !important; }
     }`;
     document.head.appendChild(s);
     return () => s.remove();
@@ -64,7 +69,7 @@ const PaymentHistory = () => {
   return (
     <div className="tp-pay tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
+        <div className="tp-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
           <div>
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 2.6rem)", margin: "0 0 8px" }}>Payment History</h1>
             <p style={{ color: muted, margin: 0, fontSize: "0.95rem" }}>Your transaction records and receipts</p>
@@ -97,12 +102,21 @@ const PaymentHistory = () => {
                     <div style={{ width: 30, height: 30, borderRadius: 8, background: "rgba(0,212,255,0.09)", border: "1px solid rgba(0,212,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", flexShrink: 0 }}>📘</div>
                     <span style={{ fontWeight: 700, fontSize: "0.88rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.courseId?.title ?? "Course"}</span>
                   </div>
-                  <span style={{ fontWeight: 800, fontSize: "0.92rem" }}>₹{amount.toLocaleString()}</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: `${config.color}12`, border: `1px solid ${config.color}28`, color: config.color, width: "fit-content" }}>
-                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: config.color }} />{config.label}
-                  </span>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ color: muted, fontSize: "0.82rem" }}>{new Date(item.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}</span>
+                  <div className="tp-mobile-flex">
+                    <span className="tp-mobile-label">Amount</span>
+                    <span style={{ fontWeight: 800, fontSize: "0.92rem" }}>₹{amount.toLocaleString()}</span>
+                  </div>
+                  <div className="tp-mobile-flex">
+                    <span className="tp-mobile-label">Status</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", borderRadius: 100, fontSize: "0.72rem", fontWeight: 700, background: `${config.color}12`, border: `1px solid ${config.color}28`, color: config.color, width: "fit-content" }}>
+                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: config.color }} />{config.label}
+                    </span>
+                  </div>
+                  <div className="tp-mobile-end tp-divider" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className="tp-mobile-label">Date</span>
+                      <span style={{ color: muted, fontSize: "0.82rem" }}>{new Date(item.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}</span>
+                    </div>
                     {item.paymentStatus === "success" && <span style={{ color: accent, fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>Receipt</span>}
                   </div>
                 </div>

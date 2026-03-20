@@ -37,10 +37,10 @@ const MyCourses = () => {
     .tp-pill.active { background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.4); color: #00d4ff; box-shadow: 0 0 16px rgba(0,212,255,0.12); }
     .tp-grid-bg { background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px); background-size: 52px 52px; }
     @media (max-width: 600px) {
-      .tp-card { padding: 18px 16px; }
-      .tp-card > div { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
-      .tp-card > div > div:last-child { align-self: flex-start; flex-wrap: wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; justify-content: flex-start !important; }
-      .tp-pill { padding: 6px 14px; font-size: 0.8rem; }
+      .tp-header-row { align-items: flex-start !important; flex-direction: column !important; }
+      .tp-card { padding: 16px; }
+      .tp-card-inner { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
+      .tp-card-actions { justify-content: flex-start !important; flex-wrap: wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
     }`;
     document.head.appendChild(s);
     return () => s.remove();
@@ -99,7 +99,7 @@ const MyCourses = () => {
     <div className="tp-my tp-grid-bg" style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 32px 80px" }}>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
+        <div className="tp-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16, animation: "tp-fade-up 0.6s ease forwards" }}>
           <div>
             <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2rem, 4vw, 2.6rem)", margin: "0 0 8px" }}>My Courses</h1>
             <p style={{ color: muted, margin: 0, fontSize: "0.95rem" }}>Track your learning progress and download certificates</p>
@@ -134,7 +134,7 @@ const MyCourses = () => {
               const isStarted = progress > 0 || isCompleted;
               return (
                 <div key={enrollment._id} className="tp-card" style={{ animation: "tp-fade-up 0.5s ease forwards", animationDelay: `${i * 60}ms`, opacity: 0, animationFillMode: "forwards" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+                  <div className="tp-card-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                         <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c?.title ?? "Course"}</h3>
@@ -152,7 +152,7 @@ const MyCourses = () => {
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
+                    <div className="tp-card-actions" style={{ display: "flex", gap: 10, flexShrink: 0 }}>
                       {!isCompleted && (
                         <button onClick={() => markComplete(c?._id)} style={{ padding: "10px 20px", borderRadius: 100, background: `linear-gradient(135deg, ${accent}, #0094ff)`, border: "none", color: "#001820", fontWeight: 800, fontSize: "0.84rem", cursor: "pointer", fontFamily: "'Cabinet Grotesk', sans-serif", boxShadow: `0 4px 20px rgba(0,212,255,0.3)`, transition: "all 0.3s" }}
                           onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 30px rgba(0,212,255,0.45)"; }}

@@ -6,7 +6,23 @@ const ContactUs = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "instant" });
+        const timer = setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "instant" });
+        }, 150);
+        
+        const style = document.createElement("style");
+        style.textContent = `
+            @media (max-width: 768px) {
+                .contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+                .contact-form-grid { grid-template-columns: 1fr !important; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            clearTimeout(timer);
+            style.remove();
+        };
     }, []);
 
     const bg = "#030912";
@@ -32,7 +48,7 @@ const ContactUs = () => {
 
     return (
         <div style={{ background: bg, minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: text, padding: "80px 32px 100px" }}>
-            <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(300px, 1fr) minmax(300px, 1.2fr)", gap: 64, alignItems: "start", animation: "tp-fade-up 0.5s ease" }}>
+            <div className="contact-grid" style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(300px, 1fr) minmax(300px, 1.2fr)", gap: 64, alignItems: "start", animation: "tp-fade-up 0.5s ease" }}>
 
                 <div>
                     <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: "clamp(2.5rem, 4vw, 3.5rem)", margin: "0 0 16px", lineHeight: 1 }}>Get in touch</h1>
@@ -69,7 +85,7 @@ const ContactUs = () => {
 
                 <div style={{ background: "rgba(6,14,24,0.6)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 24, padding: "40px", backdropFilter: "blur(20px)" }}>
                     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                        <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                             <div>
                                 <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: muted, marginBottom: 8 }}>First name</label>
                                 <input type="text" name="firstName" required placeholder="First name" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.08)", color: text, fontSize: "0.95rem", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = accent} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
