@@ -48,7 +48,7 @@ const AboutUs = () => {
                         I noticed that a lot of traditional e-learning platforms felt clunky, outdated, and packed with filler courses. You'd sign up wanting to build a project, and end up watching 10 hours of unnecessary slides.
                     </p>
                     <p>
-                        TutorPro was built differently. We wanted a clean, fast experience where the video player works perfectly, payments are simple, and the focus is entirely on getting you from zero to actually building things as fast as possible.
+                        TutorPro was built differently. We wanted a clean, fast experience where the video player works perfectly, payments are simple, and the focus is entirely on getting you from zero to actually building things and your skills as fast as possible.
                     </p>
                     <p>
                         If you are an instructor tired of high platform fees, or a student tired of boring tutorials, you're in the right place. Have a look around our courses to see what we mean.
